@@ -1,7 +1,12 @@
-import React from 'react'
+import React from "react";
+import Header from "../components/Header";
+import Leftbar from "../components/Leftbar";
 
 export default function MainPage() {
   return (
-    <div>MainPage</div>
-  )
+    <div>
+      <Header />
+      <Leftbar />
+    </div>
+  );
 }
