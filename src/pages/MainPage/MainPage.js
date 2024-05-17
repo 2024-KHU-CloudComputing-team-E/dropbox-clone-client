@@ -6,6 +6,20 @@ import { AiFillCaretDown } from "react-icons/ai";
 
 
 export default function MainPage() {
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalImgSrc, setModalImgSrc] = useState('');
+
+  const openModal = (imgSrc) =&gt; {
+    setModalImgSrc(imgSrc);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () =&gt; {
+    setIsModalOpen(false);
+    setModalImgSrc('');
+  };
+
   return (
     <div className="layout">
       <div className="button">
