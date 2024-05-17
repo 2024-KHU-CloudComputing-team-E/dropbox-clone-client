@@ -13,7 +13,7 @@ function Leftbar() {
       </Dropdown.Item>
       <br></br>
       <ListGroup>
-        <ListGroup.Item action href="#link1">
+        <ListGroup.Item action href="upload">
           <h5>업로드</h5>
         </ListGroup.Item>
         <ListGroup.Item action href="#link2">
