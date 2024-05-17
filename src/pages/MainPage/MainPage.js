@@ -5,21 +5,8 @@ import './MainPage.css'
 import { AiFillCaretDown } from "react-icons/ai";
 
 
+
 export default function MainPage() {
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalImgSrc, setModalImgSrc] = useState('');
-
-
-  const openModal = (imgSrc) =>; {
-    setModalImgSrc(imgSrc);
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () =>; {
-    setIsModalOpen(false);
-    setModalImgSrc('');
-  };
 
   return (
     <div className="layout">
@@ -32,7 +19,7 @@ export default function MainPage() {
           <text>정렬</text>
           <AiFillCaretDown />
         </button>
-      </div>
+      </div></div>
       <div className="container">
         {[...Array(20)].map((_, index) => (
           <div key={index} className="item">
