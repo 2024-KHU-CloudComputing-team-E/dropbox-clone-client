@@ -10,12 +10,13 @@ export default function MainPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalImgSrc, setModalImgSrc] = useState('');
 
-  const openModal = (imgSrc) =&gt; {
+
+  const openModal = (imgSrc) =>; {
     setModalImgSrc(imgSrc);
     setIsModalOpen(true);
   };
 
-  const closeModal = () =&gt; {
+  const closeModal = () =>; {
     setIsModalOpen(false);
     setModalImgSrc('');
   };
