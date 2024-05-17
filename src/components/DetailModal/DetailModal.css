@@ -56,10 +56,11 @@
   padding: 0;
   flex: 1;
   overflow-y: auto;
+  margin-top: 20px;
 }
 
 .modal-right li {
-  margin-bottom: 10px;
+  margin-bottom: 25px;
 }
 
 .comment-form {
