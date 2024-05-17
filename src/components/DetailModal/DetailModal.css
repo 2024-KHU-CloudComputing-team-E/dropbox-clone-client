@@ -1,3 +1,4 @@
+/* DetailModal.css */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -8,23 +9,84 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 1000; /* 모달 창의 z-index를 높게 설정 */
 }
 
 .modal-content {
-  background-color: white;
-  padding: 20px;
+  display: flex; /* Flexbox를 사용하여 수평 배치 */
+  flex-direction: row;
+  background-color: #fff;
   border-radius: 8px;
+  width: 80%;
+  height: 80%;
+  overflow: hidden;
   position: relative;
-  max-width: 70%;
-  max-height: 70%;
-  overflow: auto;
 }
 
-.modal-content img {
-  max-width: 70%;
-  height: auto;
-  display: block;
+.modal-left {
+  flex: 0 0 70%; /* 왼쪽 영역의 너비를 70%로 설정 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+  border-right: 1px solid #ccc; /* 세로선 추가 */
+}
+
+.modal-left img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.modal-right {
+  flex: 0 0 30%; /* 오른쪽 영역의 너비를 30%로 설정 */
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow-y: auto;
+}
+
+.modal-right h3 {
+  margin-top: 0;
+}
+
+.modal-right ul {
+  list-style: none;
+  padding: 0;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.modal-right li {
+  margin-bottom: 10px;
+}
+
+.comment-form {
+  display: flex;
+  border-top: 1px solid #ccc;
+  padding-top: 10px;
+}
+
+.comment-input {
+  flex: 1;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-right: 10px;
+}
+
+.comment-button {
+  padding: 5px 10px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.comment-button:hover {
+  background-color: #0056b3;
 }
 
 .close-button {
