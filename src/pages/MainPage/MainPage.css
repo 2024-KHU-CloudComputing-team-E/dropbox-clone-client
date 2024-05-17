@@ -3,6 +3,17 @@
   padding-left: 255px;
 }
 
+.button {
+  display: flex;
+  justify-content: space-between;
+  font-size: 20px;
+}
+
+.button-type, .button-sort {
+  border-radius: 12px;
+}
+
+
 .container::-webkit-scrollbar {
   height: 10px;
   }
@@ -20,8 +31,9 @@
 
 .container{
   display: flex;
+  justify-content: space-around;
   column-gap: 100px;
-  row-gap: 60px;
+  row-gap: 100px;
   flex-wrap: wrap;
   overflow: visible;
   width: 100%;
