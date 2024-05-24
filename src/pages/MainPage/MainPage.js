@@ -7,9 +7,11 @@ import { AiFillCaretDown } from "react-icons/ai";
 import DetailModal from '../../components/DetailModal/DetailModal';
 import { useParams } from 'react-router-dom';
 
+const BASE_URL = process.env.REACT_APP_BASE_URL;
+
 const fetchImages = async (userId, page) => {
   try {
-    const response = await axios.get(`/api/${userId}/images?page=${page}`);
+    const response = await axios.get(`${BASE_URL}/api/${userId}/images?page=${page}`);
     return response.data.images;
   } catch (error) {
     console.error("Failed to fetch images", error);

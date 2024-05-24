@@ -3,10 +3,13 @@ import login from './googleLoginImage.svg';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 
+const BASE_URL = process.env.REACT_APP_BASE_URL;
+
 export default function LoginPage() {
   const handleLoginClick = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/api/login/google');
+      console.log(`${BASE_URL}/api/login/google`);
+      const response = await axios.get(`${BASE_URL}/api/login/google`);
       console.log(response.data);
     } catch (error) {
       console.error('Error logging in with Google:', error);
