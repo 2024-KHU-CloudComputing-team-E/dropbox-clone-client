@@ -21,12 +21,12 @@ const fetchImages = async (userId, page) => {
 };
 
 // 파일 상세보기 조회 요청
-const fetchFiles = async (fileId) => {
+const fetchFile = async (fileId) => {
   try {
-    const response = await axios.get(`${BASE_URL}/api/${fileId}/comments`);
-    return response.data.comments;
+    const response = await axios.get(`${BASE_URL}/api/${fileId}`);
+    return response.data;
   } catch (error) {
-    console.error("Failed to fetch comments", error);
+    console.error("Failed to fetch files", error);
     return [];
   }
 };
@@ -37,53 +37,59 @@ export default function MainPage() {
   const [images, setImages] = useState([{
     "fileId": 1,
     "fileName": "fileName",
-    "src": "/testImg.jpg",
+    "imgUrl": "/testImg.jpg",
   },
   {
     "fileId": 1,
     "fileName": "fileName",
-    "src": "/testImg.jpg",
+    "imgUrl": "/testImg.jpg",
   },
   {
     "fileId": 1,
     "fileName": "fileName",
-    "src": "/testImg.jpg",
+    "imgUrl": "/testImg.jpg",
   },
   {
     "fileId": 1,
     "fileName": "fileName",
-    "src": "/testImg.jpg",
+    "imgUrl": "/testImg.jpg",
   },
   {
     "fileId": 1,
     "fileName": "fileName",
-    "src": "/testImg.jpg",
+    "imgUrl": "/testImg.jpg",
   }]);
   const [page, setPage] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalImgSrc, setModalImgSrc] = useState('');
-  const [modalImgId, setModalImgId] = useState(null);
-  const [files, setFiles] = useState([]);
-  const [comments, setComments] = useState([]);
+  const [file, setFile] = useState({
+    "comments":[
+      {"userId": "userId", "comment": "comment"},
+      {"userId": "userId", "comment": "comment"},
+    ],
+    "context": "context",
+    "name": "name.jpg",
+    "size": "number",
+    "createdAt": "date",
+    "updatedAt": "date",
+    "aiType": "stirng",
+    "fileUrl": "/testImg.jpg",
+    "imgUrl": "/testImg.jpg"
+  });
 
   const observer = useRef(null);
   const lastImageRef = useRef(null);
   const isLastPage = useRef(false);
 
-  const openModal = async (imgId, imgSrc) => {
-    setModalImgSrc(imgSrc);
-    setModalImgId(imgId);
+  const openModal = async (fileId) => {
     setIsModalOpen(true);
-    const fetchedFiles = await fetchFiles(imgId);
-    setFiles(fetchedFiles);
+    const fetchedFile = await fetchFile(fileId);
+    //setFile(fetchedFile);
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
-    setModalImgSrc('');
-    setModalImgId(null);
-    setFiles([]);
+    //setFile([]);
   };
 
   const loadMoreImages = useCallback(async () => {
@@ -144,9 +150,9 @@ export default function MainPage() {
                     {image.fileName}
                   </div>
                   <img 
-                    src={image.src} 
+                    src={image.imgUrl} 
                     alt='이미지' 
-                    onClick={() => openModal(image.id, image.src)}
+                    onClick={() => openModal(image.fileId)}
                   />
                 </div>
               );
@@ -157,9 +163,9 @@ export default function MainPage() {
                     {image.fileName}
                   </div>
                   <img 
-                    src={image.src} 
+                    src={image.imgUrl} 
                     alt='이미지' 
-                    onClick={() => openModal(image.id, image.src)}
+                    onClick={() => openModal(image.fileId)}
                   />
                 </div>
               );
@@ -170,9 +176,7 @@ export default function MainPage() {
         <DetailModal 
           isOpen={isModalOpen}
           onClose={closeModal}
-          imgSrc={modalImgSrc} 
-          comments={comments} 
-          imgId={modalImgId}
+          file={file}
           />
       </div>
     </div>
