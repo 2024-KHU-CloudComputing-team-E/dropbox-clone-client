@@ -1,16 +1,20 @@
 import React, { useState } from 'react';
 import './DetailModal.css';
 
-const DetailModal = ({ isOpen, onClose, imgSrc }) => {
-  const [comments, setComments] = useState([
-    { user: 'User1', text: 'ㅇㅇㅇㅇ' },
-    { user: 'User2', text: 'aaaa' },
-    { user: 'User3', text: '1111' },
-  ]);
+const DetailModal = ({ isOpen, onClose, imgSrc, comments, imgId }) => {
   const [newComment, setNewComment] = useState('');
 
   const handleCommentChange = (e) => {
     setNewComment(e.target.value);
+  };
+
+  const handleDownload = () => {
+    const link = document.createElement('a');
+    link.href = fileUrl;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const handleCommentSubmit = (e) => {
