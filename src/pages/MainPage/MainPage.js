@@ -1,5 +1,5 @@
 import './MainPage.css';
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef} from "react";
 import axios from 'axios';
 import Header from "../../components/Header";
 import Leftbar from "../../components/Leftbar";
@@ -67,6 +67,10 @@ export default function MainPage() {
   const [files, setFiles] = useState([]);
   const [comments, setComments] = useState([]);
 
+  const observer = useRef(null);
+  const lastImageRef = useRef(null);
+  const isLastPage = useRef(false);
+
   const openModal = async (imgId, imgSrc) => {
     setModalImgSrc(imgSrc);
     setModalImgId(imgId);
@@ -82,35 +86,39 @@ export default function MainPage() {
     setFiles([]);
   };
 
-
   const loadMoreImages = useCallback(async () => {
-    setIsLoading(true);
-    const newImages = await fetchImages(userId, page);
-    setImages(prevImages => [...prevImages, ...newImages]);
-    setIsLoading(false);
+    if (!isLastPage.current) {
+      setIsLoading(true);
+      const newImages = await fetchImages(userId, page);
+      if (newImages.length === 0) {
+        isLastPage.current = true;
+      } else {
+        setImages(prevImages => [...prevImages, ...newImages]);
+        setPage(prevPage => prevPage + 1);
+      }
+      setIsLoading(false);
+    }
   }, [userId, page]);
 
-  // userId가 바뀌면 page, Image 초기화
-  // useEffect(() => {
-  //   setImages([]);
-  //   setPage(0); 
-  // }, [userId]);
-
-  // 페이지가 변경될 때마다 새로운 이미지 로드
   useEffect(() => {
-    loadMoreImages();
-  }, [page, loadMoreImages]);
-
-  const handleScroll = useCallback(() => {
-    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500 && !isLoading) {
-      setPage(prevPage => prevPage + 1);
+    if (!observer.current) {
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && !isLoading) {
+          setPage(prevPage => prevPage + 1);
+        }
+      });
     }
   }, [isLoading]);
 
   useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [handleScroll]);
+    if (lastImageRef.current) {
+      observer.current.observe(lastImageRef.current);
+    }
+  }, [lastImageRef.current]);
+
+  useEffect(() => {
+    loadMoreImages();
+  }, [page]);
 
   return (
     <div>
@@ -128,18 +136,35 @@ export default function MainPage() {
           </button>
         </div>
         <div className="container">
-          {images.map((image, index) => (
-            <div key={index} className="item">
-              <div>
-                {image.fileName}
-              </div>
-              <img 
-                src={image.src} 
-                alt='이미지' 
-                onClick={() => openModal(image.id, image.src)}
-              />
-            </div>
-          ))}
+          {images.map((image, index) => {
+            if (index === images.length - 1) {
+              return (
+                <div key={index} ref={lastImageRef} className="item">
+                  <div>
+                    {image.fileName}
+                  </div>
+                  <img 
+                    src={image.src} 
+                    alt='이미지' 
+                    onClick={() => openModal(image.id, image.src)}
+                  />
+                </div>
+              );
+            } else {
+              return (
+                <div key={index} className="item">
+                  <div>
+                    {image.fileName}
+                  </div>
+                  <img 
+                    src={image.src} 
+                    alt='이미지' 
+                    onClick={() => openModal(image.id, image.src)}
+                  />
+                </div>
+              );
+            }
+          })}
         </div>
         {isLoading && <div>Loading...</div>}
         <DetailModal 
