@@ -15,6 +15,7 @@ const DetailModal = ({ isOpen, onClose, file}) => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    alert("다운로드가 완료되었습니다!");
   };
 
   // const handleCommentSubmit = (e) => {
@@ -29,6 +30,7 @@ const DetailModal = ({ isOpen, onClose, file}) => {
 
   return (
     <div className="modal-overlay" onClick={onClose}>
+      <button onClick={handleDownload} className="download-button">Download</button>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-left">
           <img src={file.imgUrl} alt="Modal Thumbnail" />
@@ -52,7 +54,6 @@ const DetailModal = ({ isOpen, onClose, file}) => {
             />
             <button type="submit" className="comment-button">Post</button>
           </form>
-          <button onClick={handleDownload} className="download-button">Download</button>
         </div>
         <button className="close-button" onClick={onClose}>Close</button>
       </div>
