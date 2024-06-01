@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './DetailModal.css';
 
-const DetailModal = ({ isOpen, onClose, file}) => {
+const DetailModal = ({ isOpen, onClose, file, setIsButtonBlinking}) => {
   // const [newComment, setNewComment] = useState('');
 
   // const handleCommentChange = (e) => {
@@ -13,10 +13,14 @@ const DetailModal = ({ isOpen, onClose, file}) => {
     link.href = `${process.env.REACT_APP_BASE_URL}${file.fileUrl}`;
     link.download = file.name;
     document.body.appendChild(link);
+
+    setIsButtonBlinking(true); // 다운로드 시작 시 반짝임 시작
+    setTimeout(() => setIsButtonBlinking(false), 3000); // 3초 후에 반짝임 멈춤
+
     link.click();
     document.body.removeChild(link);
-    alert("다운로드가 완료되었습니다!");
   };
+
 
   // const handleCommentSubmit = (e) => {
   //   e.preventDefault();

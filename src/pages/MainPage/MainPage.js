@@ -6,6 +6,7 @@ import Leftbar from "../../components/Leftbar";
 import { AiFillCaretDown } from "react-icons/ai";
 import DetailModal from '../../components/DetailModal/DetailModal';
 import { useParams } from 'react-router-dom';
+import GameComponent from '../../components/game';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -76,10 +77,14 @@ export default function MainPage() {
     "fileUrl": "/testImg.jpg",
     "imgUrl": "/testImg.jpg"
   });
+  const [isButtonBlinking, setIsButtonBlinking] = useState(false);
+  const [isGameModalOpen, setIsGameModalOpen] = useState(false);
+
 
   const observer = useRef(null);
   const lastImageRef = useRef(null);
   const isLastPage = useRef(false);
+  
 
   const openModal = async (fileId) => {
     setIsModalOpen(true);
@@ -126,6 +131,15 @@ export default function MainPage() {
     loadMoreImages();
   }, [page]);
 
+  const openGameModal = () => {
+    setIsGameModalOpen(true);
+    setIsButtonBlinking(false); // 게임 버튼 깜빡임 중지
+  };
+
+  const closeGameModal = () => {
+    setIsGameModalOpen(false);
+  };
+
   return (
     <div>
       <Header />
@@ -136,11 +150,13 @@ export default function MainPage() {
             <span>유형</span>
             <AiFillCaretDown />
           </button>
+          <button className={`game-button ${isButtonBlinking ? 'blinking' : ''}`} onClick={openGameModal} >Game</button>
           <button className='button-sort'>
             <span>정렬</span>
             <AiFillCaretDown />
           </button>
         </div>
+        {isGameModalOpen && <GameComponent onClose={closeGameModal} />}
         <div className="container">
           {images.map((image, index) => {
             if (index === images.length - 1) {
@@ -177,6 +193,7 @@ export default function MainPage() {
           isOpen={isModalOpen}
           onClose={closeModal}
           file={file}
+          setIsButtonBlinking={setIsButtonBlinking}
           />
       </div>
     </div>
