@@ -64,6 +64,7 @@ export default function MainPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [file, setFile] = useState({
+    "fileId": "fileId",
     "comments":[
       {"userId": "userId", "comment": "comment"},
       {"userId": "userId", "comment": "comment"},
