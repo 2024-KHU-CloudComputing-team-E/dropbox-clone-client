@@ -11,7 +11,7 @@ export default function LoginPage() {
         <h1 className="w-100">InstaBox</h1>
       </div>
       <div className="w-25">
-        <a href={`/api/login/google`}>
+        <a href={`${BASE_URL}/api/login/google`}>
           <img
             src={login}
             alt="구글 로그인"
