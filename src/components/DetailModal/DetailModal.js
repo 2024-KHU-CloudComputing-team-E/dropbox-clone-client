@@ -3,7 +3,7 @@ import axios from 'axios';
 import './DetailModal.css';
 import { useEffect } from 'react';
 
-const DetailModal = ({ isOpen, onClose, file, setIsButtonBlinking}) => {
+const DetailModal = ({ isOpen, onClose, file, setIsButtonBlinking, user}) => {
   const [newComment, setNewComment] = useState('');
   const [comments, setComments] = useState([]);
 
@@ -34,7 +34,7 @@ const DetailModal = ({ isOpen, onClose, file, setIsButtonBlinking}) => {
 
     //const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/api/user/logined`);
 
-    const newCommentObj = { userId: 'currentUserId', comment: newComment }; // 가짜 데이터로 새로운 댓글 객체 생성
+    const newCommentObj = { userId: user.userName, comment: newComment }; // 가짜 데이터로 새로운 댓글 객체 생성
     setComments(prevComments => [...prevComments, newCommentObj]); // 상태 업데이트로 새로운 댓글 추가
     setNewComment(''); // 댓글 입력 필드 초기화    
     

@@ -224,6 +224,7 @@ export default function MainPage() {
           onClose={closeModal}
           file={file}
           setIsButtonBlinking={setIsButtonBlinking}
+          user={user}
           />
       </div>
     </div>
