@@ -1,5 +1,5 @@
 import './MainPage.css';
-import React, { useState, useEffect, useCallback, useRef} from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import axios from 'axios';
 import Header from "../../components/Header";
 import Leftbar from "../../components/Leftbar";
@@ -32,70 +32,51 @@ const fetchFile = async (fileId) => {
   }
 };
 
+// 유저 정보 요청
+const fetchUserInfo = async () => {
+  try {
+    const response = await axios.get(`${BASE_URL}/api/user/logined`);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch user info", error);
+    return null;
+  }
+};
 
 export default function MainPage() {
   const { userId } = useParams();
-  const [images, setImages] = useState([{
-    "fileId": 1,
-    "fileName": "fileName",
-    "imgUrl": "/testImg.jpg",
-  },
-  {
-    "fileId": 1,
-    "fileName": "fileName",
-    "imgUrl": "/testImg.jpg",
-  },
-  {
-    "fileId": 1,
-    "fileName": "fileName",
-    "imgUrl": "/testImg.jpg",
-  },
-  {
-    "fileId": 1,
-    "fileName": "fileName",
-    "imgUrl": "/testImg.jpg",
-  },
-  {
-    "fileId": 1,
-    "fileName": "fileName",
-    "imgUrl": "/testImg.jpg",
-  }]);
+  const [images, setImages] = useState([]);
   const [page, setPage] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [file, setFile] = useState({
-    "fileId": "fileId",
-    "comments":[
-      {"userId": "userId", "comment": "comment"},
-      {"userId": "userId", "comment": "comment"},
-    ],
-    "context": "context",
-    "name": "name.jpg",
-    "size": "number",
-    "createdAt": "date",
-    "updatedAt": "date",
-    "aiType": "stirng",
-    "fileUrl": "/testImg.jpg",
-    "imgUrl": "/testImg.jpg"
-  });
+  const [file, setFile] = useState(null);
   const [isButtonBlinking, setIsButtonBlinking] = useState(false);
   const [isGameModalOpen, setIsGameModalOpen] = useState(false);
-
+  const [user, setUser] = useState(null);
 
   const observer = useRef(null);
   const lastImageRef = useRef(null);
   const isLastPage = useRef(false);
-  
+
+  useEffect(() => {
+    const loadUserInfo = async () => {
+      const userInfo = await fetchUserInfo();
+      if (userInfo) {
+        setUser(userInfo);
+      }
+    };
+    loadUserInfo();
+  }, []);
 
   const openModal = async (fileId) => {
     setIsModalOpen(true);
     const fetchedFile = await fetchFile(fileId);
-    //setFile(fetchedFile);
+    setFile(fetchedFile);
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
-    //setFile([]);
+    setFile(null);
   };
 
   const loadMoreImages = useCallback(async () => {
@@ -157,6 +138,13 @@ export default function MainPage() {
             <AiFillCaretDown />
           </button>
         </div>
+        {user && (
+          <div className="user-info">
+            <img src={user.picture} alt="User profile" />
+            <div>{user.userName}</div>
+            <div>{user.email}</div>
+          </div>
+        )}
         {isGameModalOpen && <GameComponent onClose={closeGameModal} />}
         <div className="container">
           {images.map((image, index) => {
@@ -195,7 +183,7 @@ export default function MainPage() {
           onClose={closeModal}
           file={file}
           setIsButtonBlinking={setIsButtonBlinking}
-          />
+        />
       </div>
     </div>
   );
