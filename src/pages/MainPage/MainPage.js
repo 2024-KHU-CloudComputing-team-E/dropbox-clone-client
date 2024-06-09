@@ -92,7 +92,10 @@ export default function MainPage() {
   });
   const [isButtonBlinking, setIsButtonBlinking] = useState(false);
   const [isGameModalOpen, setIsGameModalOpen] = useState(false);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({
+    "email": "email@gmail.com",
+    "userName": "userName",
+  });
 
 
   const observer = useRef(null);
@@ -168,7 +171,13 @@ export default function MainPage() {
       <Header />
       <Leftbar />
       <div className="layout">
-        <div className="button">
+                {user && (
+          <div className="user-info">
+            <div>{user.userName}</div>
+            <div>{user.email}</div>
+          </div>
+        )}
+        <div className="button-container">
           <button className='button-type'>
             <span>유형</span>
             <AiFillCaretDown />
@@ -179,39 +188,31 @@ export default function MainPage() {
             <AiFillCaretDown />
           </button>
         </div>
-        {user && (
-          <div className="user-info">
-            <img src={user.picture} alt="User profile" />
-            <div>{user.userName}</div>
-            <div>{user.email}</div>
-          </div>
-        )}
         {isGameModalOpen && <GameComponent onClose={closeGameModal} />}
         <div className="container">
           {images.map((image, index) => {
             if (index === images.length - 1) {
               return (
-                <div key={index} ref={lastImageRef} className="item">
+                <div key={index} ref={lastImageRef} className="item" onClick={() => openModal(image.fileId)}>
                   <div>
                     {image.fileName}
                   </div>
                   <img 
                     src={image.imgUrl} 
                     alt='이미지' 
-                    onClick={() => openModal(image.fileId)}
                   />
                 </div>
               );
             } else {
               return (
-                <div key={index} className="item">
+                <div key={index} className="item" onClick={() => openModal(image.fileId)}
+>
                   <div>
                     {image.fileName}
                   </div>
                   <img 
                     src={image.imgUrl} 
                     alt='이미지' 
-                    onClick={() => openModal(image.fileId)}
                   />
                 </div>
               );
