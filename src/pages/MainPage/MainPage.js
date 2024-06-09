@@ -1,12 +1,12 @@
-import './MainPage.css';
-import React, { useState, useEffect, useCallback, useRef} from "react";
-import axios from 'axios';
+import "./MainPage.css";
+import React, { useState, useEffect, useCallback, useRef } from "react";
+import axios from "axios";
 import Header from "../../components/Header";
 import Leftbar from "../../components/Leftbar";
 import { AiFillCaretDown } from "react-icons/ai";
-import DetailModal from '../../components/DetailModal/DetailModal';
-import { useParams } from 'react-router-dom';
-import GameComponent from '../../components/game';
+import DetailModal from "../../components/DetailModal/DetailModal";
+import { useParams } from "react-router-dom";
+import GameComponent from "../../components/game";
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -44,59 +44,79 @@ const fetchUserInfo = async () => {
   }
 };
 
+// 파일 다운로드 요청
+const downloadFile = async (fileId) => {
+  try {
+    const response = await axios.get(
+      `${BASE_URL}/api/downloadFile?fileId=${fileId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.log("Failed to download file", error);
+    return null;
+  }
+};
 
 export default function MainPage() {
   const { userId } = useParams();
-  const [images, setImages] = useState([{
-    "fileId": 1,
-    "fileName": "fileName",
-    "imgUrl": "/testImg.jpg",
-  },
-  {
-    "fileId": 1,
-    "fileName": "fileName",
-    "imgUrl": "/testImg.jpg",
-  },
-  {
-    "fileId": 1,
-    "fileName": "fileName",
-    "imgUrl": "/testImg.jpg",
-  },
-  {
-    "fileId": 1,
-    "fileName": "fileName",
-    "imgUrl": "/testImg.jpg",
-  },
-  {
-    "fileId": 1,
-    "fileName": "fileName",
-    "imgUrl": "/testImg.jpg",
-  }]);
+  const [images, setImages] = useState([
+    {
+      fileId: 1,
+      fileName: "fileName",
+      imgUrl: "/testImg.jpg",
+    },
+    {
+      fileId: 1,
+      fileName: "fileName",
+      imgUrl: "/testImg.jpg",
+    },
+    {
+      fileId: 1,
+      fileName: "fileName",
+      imgUrl: "/testImg.jpg",
+    },
+    {
+      fileId: 1,
+      fileName: "fileName",
+      imgUrl: "/testImg.jpg",
+    },
+    {
+      fileId: 1,
+      fileName: "fileName",
+      imgUrl: "/testImg.jpg",
+    },
+  ]);
   const [page, setPage] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [file, setFile] = useState({
-    "fileId": "fileId",
-    "comments":[
-      {"userId": "userId", "comment": "comment"},
-      {"userId": "userId", "comment": "comment"},
+    fileId: "fileId",
+    comments: [
+      { userId: "userId", comment: "comment" },
+      { userId: "userId", comment: "comment" },
     ],
-    "context": "context",
-    "name": "name.jpg",
-    "size": "number",
-    "createdAt": "date",
-    "updatedAt": "date",
-    "aiType": "stirng",
-    "fileUrl": "/testImg.jpg",
-    "imgUrl": "/testImg.jpg"
+    context: "context",
+    name: "name.jpg",
+    size: "number",
+    createdAt: "date",
+    updatedAt: "date",
+    aiType: "stirng",
+    fileUrl: "/testImg.jpg",
+    imgUrl: "/testImg.jpg",
   });
   const [isButtonBlinking, setIsButtonBlinking] = useState(false);
   const [isGameModalOpen, setIsGameModalOpen] = useState(false);
   const [user, setUser] = useState({
-    "email": "email@gmail.com",
-    "userName": "userName",
+    email: "email@gmail.com",
+    userName: "userName",
   });
-
+  const [contextMenu, setContextMenu] = useState({
+    visible: false,
+    x: 0,
+    y: 0,
+    fileId: null,
+    fileName: null,
+  });
 
   const observer = useRef(null);
   const lastImageRef = useRef(null);
@@ -130,8 +150,8 @@ export default function MainPage() {
       if (newImages.length === 0) {
         isLastPage.current = true;
       } else {
-        setImages(prevImages => [...prevImages, ...newImages]);
-        setPage(prevPage => prevPage + 1);
+        setImages((prevImages) => [...prevImages, ...newImages]);
+        setPage((prevPage) => prevPage + 1);
       }
       setIsLoading(false);
     }
@@ -141,7 +161,7 @@ export default function MainPage() {
     if (!observer.current) {
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && !isLoading) {
-          setPage(prevPage => prevPage + 1);
+          setPage((prevPage) => prevPage + 1);
         }
       });
     }
@@ -166,24 +186,83 @@ export default function MainPage() {
     setIsGameModalOpen(false);
   };
 
+  // 다른 부분을 클릭하면 컨텍스트가 닫힘
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (contextMenu.visible) {
+        closeContextMenu();
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [contextMenu.visible]);
+
+  const handleContextMenu = (event, fileId, fileName) => {
+    event.preventDefault();
+    setContextMenu({
+      visible: true,
+      x: event.clientX,
+      y: event.clientY,
+      fileId,
+      fileName,
+    });
+  };
+
+  const handleDownload = () => {
+    if (contextMenu.fileId) {
+      //const fileUrl = downloadFile(contextMenu.fileId);
+      const fileUrl = "/testImg.jpg";
+      const link = document.createElement("a");
+      link.href = `${process.env.REACT_APP_BASE_URL}${fileUrl}`;
+      link.download = contextMenu.fileName;
+      document.body.appendChild(link);
+
+      setIsButtonBlinking(true); // 다운로드 시작 시 반짝임 시작
+      setTimeout(() => setIsButtonBlinking(false), 3000); // 3초 후에 반짝임 멈춤
+
+      link.click();
+      document.body.removeChild(link);
+    }
+    setContextMenu({ visible: false, x: 0, y: 0, fileId: null });
+  };
+
+  const handleDelete = () => {
+    if (contextMenu.fileId) {
+      // 삭제 로직 추가
+    }
+    setContextMenu({ visible: false, x: 0, y: 0, fileId: null });
+  };
+
+  const closeContextMenu = () => {
+    setContextMenu({ visible: false, x: 0, y: 0, fileId: null });
+  };
+
   return (
     <div>
       <Header />
       <Leftbar />
       <div className="layout">
-                {user && (
+        {user && (
           <div className="user-info">
             <div>{user.userName}</div>
             <div>{user.email}</div>
           </div>
         )}
         <div className="button-container">
-          <button className='button-type'>
+          <button className="button-type">
             <span>유형</span>
             <AiFillCaretDown />
           </button>
-          <button className={`game-button ${isButtonBlinking ? 'blinking' : ''}`} onClick={openGameModal} >Game</button>
-          <button className='button-sort'>
+          <button
+            className={`game-button ${isButtonBlinking ? "blinking" : ""}`}
+            onClick={openGameModal}
+          >
+            Game
+          </button>
+          <button className="button-sort">
             <span>정렬</span>
             <AiFillCaretDown />
           </button>
@@ -193,40 +272,58 @@ export default function MainPage() {
           {images.map((image, index) => {
             if (index === images.length - 1) {
               return (
-                <div key={index} ref={lastImageRef} className="item" onClick={() => openModal(image.fileId)}>
-                  <div>
-                    {image.fileName}
-                  </div>
-                  <img 
-                    src={image.imgUrl} 
-                    alt='이미지' 
-                  />
+                <div
+                  key={index}
+                  ref={lastImageRef}
+                  className="item"
+                  onClick={() => openModal(image.fileId)}
+                  onContextMenu={(event) =>
+                    handleContextMenu(event, image.fileId)
+                  }
+                >
+                  <div>{image.fileName}</div>
+                  <img src={image.imgUrl} alt="이미지" />
                 </div>
               );
             } else {
               return (
-                <div key={index} className="item" onClick={() => openModal(image.fileId)}
->
-                  <div>
-                    {image.fileName}
-                  </div>
-                  <img 
-                    src={image.imgUrl} 
-                    alt='이미지' 
-                  />
+                <div
+                  key={index}
+                  className="item"
+                  onClick={() => openModal(image.fileId)}
+                  onContextMenu={(event) =>
+                    handleContextMenu(event, image.fileId, image.fileName)
+                  }
+                >
+                  <div>{image.fileName}</div>
+                  <img src={image.imgUrl} alt="이미지" />
                 </div>
               );
             }
           })}
         </div>
         {isLoading && <div>Loading...</div>}
-        <DetailModal 
+        {contextMenu.visible && (
+          <div
+            className="context-menu"
+            style={{ top: contextMenu.y, left: contextMenu.x }}
+            onClick={closeContextMenu} // 클릭 시 컨텍스트 메뉴 닫기
+          >
+            <div className="context-menu-item" onClick={handleDownload}>
+              다운로드
+            </div>
+            <div className="context-menu-item" onClick={handleDelete}>
+              휴지통으로 이동
+            </div>
+          </div>
+        )}
+        <DetailModal
           isOpen={isModalOpen}
           onClose={closeModal}
           file={file}
           setIsButtonBlinking={setIsButtonBlinking}
           user={user}
-          />
+        />
       </div>
     </div>
   );
