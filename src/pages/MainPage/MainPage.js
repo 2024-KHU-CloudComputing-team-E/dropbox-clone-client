@@ -57,6 +57,24 @@ const downloadFile = async (fileId) => {
   }
 };
 
+// 파일 삭제 요청
+const deleteFile = async (fileId) => {
+  try {
+    const response = await axios.post(
+      `${BASE_URL}/api/deleteFile/moveFileToRecycleBin?fileId=${fileId}`
+    );
+    if (response.status === 200) {
+      alert("파일이 휴지통으로 이동했습니다.");
+    } else {
+      alert(`파일 이동 실패: ${response.status}`);
+    }
+    return response;
+  } catch (error) {
+    console.log("Faild to delete file", error);
+    return null;
+  }
+};
+
 export default function MainPage() {
   const { userId } = useParams();
   const [images, setImages] = useState([
@@ -66,22 +84,22 @@ export default function MainPage() {
       imgUrl: "/testImg.jpg",
     },
     {
-      fileId: 1,
+      fileId: 2,
       fileName: "fileName",
       imgUrl: "/testImg.jpg",
     },
     {
-      fileId: 1,
+      fileId: 3,
       fileName: "fileName",
       imgUrl: "/testImg.jpg",
     },
     {
-      fileId: 1,
+      fileId: 4,
       fileName: "fileName",
       imgUrl: "/testImg.jpg",
     },
     {
-      fileId: 1,
+      fileId: 5,
       fileName: "fileName",
       imgUrl: "/testImg.jpg",
     },
@@ -211,9 +229,9 @@ export default function MainPage() {
     });
   };
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
     if (contextMenu.fileId) {
-      //const fileUrl = downloadFile(contextMenu.fileId);
+      //const fileUrl = await downloadFile(contextMenu.fileId);
       const fileUrl = "/testImg.jpg";
       const link = document.createElement("a");
       link.href = `${process.env.REACT_APP_BASE_URL}${fileUrl}`;
@@ -229,9 +247,14 @@ export default function MainPage() {
     setContextMenu({ visible: false, x: 0, y: 0, fileId: null });
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (contextMenu.fileId) {
-      // 삭제 로직 추가
+      //const response = await deleteFile(contextMenu.fileId);
+      //if (response.status === 200) {
+      setImages((prevImages) =>
+        prevImages.filter((image) => image.fileId !== contextMenu.fileId)
+      );
+      //}
     }
     setContextMenu({ visible: false, x: 0, y: 0, fileId: null });
   };
