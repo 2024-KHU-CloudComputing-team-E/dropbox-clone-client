@@ -1,4 +1,3 @@
-/* Leftbar.css */
 .leftbar {
   position: fixed;
   top: 0;
@@ -11,6 +10,7 @@
   overflow-y: auto;
   z-index: 1000;
   border-right: 2px solid #e0e0e0;
+  padding-top: 56px; /* 헤더 높이만큼 아래로 이동 */
 }
 
 .leftbar h2 {

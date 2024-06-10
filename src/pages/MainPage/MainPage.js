@@ -268,12 +268,14 @@ export default function MainPage() {
       <Header />
       <Leftbar />
       <div className="layout">
-        {user && (
-          <div className="user-info">
-            <div>{user.userName}</div>
-            <div>{user.email}</div>
-          </div>
-        )}
+        <div className="user-info">
+          {user && (
+            <>
+              <div>{user.userName}</div>
+              <div>{user.email}</div>
+            </>
+          )}
+        </div>
         <div className="button-container">
           <button className="button-type">
             <span>유형</span>
