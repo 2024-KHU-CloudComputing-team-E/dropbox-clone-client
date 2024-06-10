@@ -66,6 +66,22 @@ const restoreFile = async (fileId) => {
   }
 };
 
+// 휴지통 비우기 요청
+const deleteAllFiles = async () => {
+  try {
+    const response = await axios.post(`${BASE_URL}/api/deleteFile/deleteAll`);
+    if (response.status === 200) {
+      alert("휴지통이 비워졌습니다.");
+    } else {
+      alert(`휴지통 비우기 실패: ${response.status}`);
+    }
+    return response;
+  } catch (error) {
+    console.log("Failed to delete all", error);
+    return null;
+  }
+};
+
 export default function TrashPage() {
   const [images, setImages] = useState([
     {
@@ -235,6 +251,13 @@ export default function TrashPage() {
     setContextMenu({ visible: false, x: 0, y: 0, fileId: null });
   };
 
+  const handleDeleteAll = async () => {
+    const response = await deleteAllFiles();
+    //if (response && response.status === 200) {
+    setImages([]);
+    //}
+  };
+
   return (
     <div>
       <Header />
@@ -260,6 +283,9 @@ export default function TrashPage() {
           <button className="button-sort">
             <span>정렬</span>
             <AiFillCaretDown />
+          </button>
+          <button className="button-clear" onClick={handleDeleteAll}>
+            <span>휴지통 비우기</span>
           </button>
         </div>
         {isGameModalOpen && <GameComponent onClose={closeGameModal} />}

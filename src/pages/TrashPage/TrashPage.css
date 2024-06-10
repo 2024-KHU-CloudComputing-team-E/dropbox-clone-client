@@ -12,7 +12,7 @@
   margin-bottom: 50px;
 }
 
-.button-type, .button-sort, .game-button {
+.button-type, .button-sort, .game-button, .button-clear {
   border-radius: 12px;
   padding: 10px 20px;
   font-size: 16px;
