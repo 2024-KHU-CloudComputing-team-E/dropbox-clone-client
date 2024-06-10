@@ -13,11 +13,22 @@
   padding-top: 56px; /* 헤더 높이만큼 아래로 이동 */
 }
 
+.logo-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.logo {
+  width: 65px; /* 로고 크기를 적절히 조절하세요 */
+  height: auto;
+  margin-right: 10px;
+}
+
 .leftbar h2 {
   color: #ff6f61;
-  text-align: center;
-  margin-bottom: 30px;
   font-family: 'Comic Sans MS', cursive, sans-serif;
+  margin: 0; /* h2 요소의 기본 마진 제거 */
 }
 
 .leftbar .list-group-item {

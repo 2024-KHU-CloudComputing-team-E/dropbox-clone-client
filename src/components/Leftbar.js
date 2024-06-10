@@ -11,9 +11,10 @@ function Leftbar() {
 
   return (
     <div className="leftbar">
-      <Dropdown.Item>
+      <div className="logo-container">
+        <img src={"logo.png"} alt="logo" className="logo" />
         <h2>InstaBox</h2>
-      </Dropdown.Item>
+      </div>
       <ListGroup>
         <ListGroup.Item
           action
