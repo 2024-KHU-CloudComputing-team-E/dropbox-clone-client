@@ -1,0 +1,23 @@
+.header-navbar {
+  position: fixed;
+  top: 0;
+  width: calc(100% - 250px); /* 레프트바를 제외한 나머지 영역 */
+  left: 250px; /* 레프트바 너비 */
+  z-index: 999; /* 레프트바보다 위에 표시 */
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #e0e0e0;
+  padding-left: 20px; /* 왼쪽 여백 추가 */
+}
+
+.search-form {
+  width: 40%; /* 서치바 너비 조정 */
+}
+
+.search-bar {
+  width: 100%;
+  border-radius: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
