@@ -1,5 +1,7 @@
+/* MainPage.css */
 .layout {
-  padding: 100px 20px 20px 275px; /* 상단, 우측, 하단, 좌측 여백을 설정하여 겹침 방지 */
+  padding: 80px;
+  padding-left: 255px;
   position: relative; 
 }
 
@@ -10,7 +12,7 @@
   margin-bottom: 50px;
 }
 
-.button-type, .button-sort, .game-button {
+.button-type, .button-sort, .game-button, .button-clear {
   border-radius: 12px;
   padding: 10px 20px;
   font-size: 16px;
@@ -86,11 +88,11 @@
 
 .user-info {
   position: absolute;
-  top: 80px; /* 헤더 높이만큼 아래로 이동 */
-  right: 20px; /* 좌측 여백 */
+  top: 0;
+  right: 100px;
+  margin: 20px;
   font-size: 18px;
   color: #333;
-  z-index: 1001; /* 레프트바보다 위에 표시되도록 z-index 설정 */
 }
 
 .context-menu {

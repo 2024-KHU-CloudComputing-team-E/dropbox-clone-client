@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import "../UploadPage.css";
+import Leftbar from "../components/Leftbar";
+import Header from "../components/Header";
 
 export default function UploadPage() {
   return (
     <>
-      UploadPage
+      <Header />
+      <Leftbar />
       <UploadBox />
     </>
   );

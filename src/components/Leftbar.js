@@ -1,54 +1,56 @@
+import React from "react";
+import { useLocation } from "react-router-dom";
 import Dropdown from "react-bootstrap/Dropdown";
 import ListGroup from "react-bootstrap/ListGroup";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "./Leftbar.css";
 
 function Leftbar() {
+  const location = useLocation();
+
   return (
-    <Dropdown.Menu show>
-      <Dropdown.Item eventKey="1">
-        <br></br>
+    <div className="leftbar">
+      <div className="logo-container">
+        <img src={"logo.png"} alt="logo" className="logo" />
         <h2>InstaBox</h2>
-        <br></br>
-      </Dropdown.Item>
-      <br></br>
+      </div>
       <ListGroup>
-        <ListGroup.Item action href="upload">
-          <h5>업로드</h5>
+        <ListGroup.Item
+          action
+          href="/upload"
+          active={location.pathname === "/upload"}
+        >
+          업로드
         </ListGroup.Item>
-        <ListGroup.Item action href="#link2">
-          <h5>저장소</h5>
+        <ListGroup.Item
+          action
+          href="/storage"
+          active={location.pathname === "/storage"}
+        >
+          저장소
         </ListGroup.Item>
-
-        <ListGroup.Item action href="#link3">
-          <h5>즐겨찾기</h5>
+        <ListGroup.Item
+          action
+          href="/favorites"
+          active={location.pathname === "/favorites"}
+        >
+          즐겨찾기
         </ListGroup.Item>
-
-        <ListGroup.Item action href="#link4">
-          <h5>휴지통</h5>
+        <ListGroup.Item
+          action
+          href="/trash"
+          active={location.pathname === "/trash"}
+        >
+          휴지통
         </ListGroup.Item>
       </ListGroup>
-      <br></br>
-      <br></br>
-      <br></br>
-      <Dropdown.Item eventKey="1">
+      <Dropdown.Item>
         <h5>저장용량</h5>
         100GB 중 18GB 사용
-        <ProgressBar now={60} />
+        <ProgressBar now={18} />
       </Dropdown.Item>
-      <br></br>
-      <br></br>
-      <br></br>
-      <br></br>
-      <br></br>
-      <br></br>
-      <br></br>
-      <br></br>
-      <br></br>
-      <br></br>
-      <br></br>
-      <br></br>
-    </Dropdown.Menu>
+    </div>
   );
 }
 
