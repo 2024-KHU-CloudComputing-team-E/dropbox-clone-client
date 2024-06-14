@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import axios from "axios";
 import Header from "../../components/Header";
 import Leftbar from "../../components/Leftbar";
-import { AiFillCaretDown, AiFillCaretUp } from "react-icons/ai";
+import { AiFillCaretDown } from "react-icons/ai";
 import DetailModal from "../../components/DetailModal/DetailModal";
 import { useParams } from "react-router-dom";
 import GameComponent from "../../components/game";
@@ -12,6 +12,7 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 // 메인페이지 무한 스크롤 이미지 요청
 const fetchImages = async (userId, page, sortKey, sortOrder) => {
+  console.log("fetchImages", userId, page, sortKey, sortOrder);
   try {
     const response = await axios.get(
       `${BASE_URL}/api/files?userId=${userId}&page=${page}&sortKey=${sortKey}&sortOrder=${sortOrder}`
@@ -39,6 +40,7 @@ const fetchUserInfo = async () => {
   try {
     const response = await axios.get(`${BASE_URL}/api/user/logined`);
     return response.data;
+    console.log(response.data);
   } catch (error) {
     console.error("Failed to fetch user info", error);
     return null;
@@ -78,7 +80,58 @@ const deleteFile = async (fileId) => {
 
 export default function MainPage() {
   const { userId } = useParams();
-  const [images, setImages] = useState([]);
+  const [images, setImages] = useState([
+    {
+      fileId: 1,
+      fileName: "fileName1",
+      imgUrl: "/testImg.jpg",
+    },
+    {
+      fileId: 2,
+      fileName: "fileName2",
+      imgUrl: "/testImg.jpg",
+    },
+    {
+      fileId: 3,
+      fileName: "fileName3",
+      imgUrl: "/testImg.jpg",
+    },
+    {
+      fileId: 4,
+      fileName: "fileName4",
+      imgUrl: "/testImg.jpg",
+    },
+    {
+      fileId: 5,
+      fileName: "fileName5",
+      imgUrl: "/testImg.jpg",
+    },
+    {
+      fileId: 1,
+      fileName: "fileName1",
+      imgUrl: "/testImg.jpg",
+    },
+    {
+      fileId: 2,
+      fileName: "fileName2",
+      imgUrl: "/testImg.jpg",
+    },
+    {
+      fileId: 3,
+      fileName: "fileName3",
+      imgUrl: "/testImg.jpg",
+    },
+    {
+      fileId: 4,
+      fileName: "fileName4",
+      imgUrl: "/testImg.jpg",
+    },
+    {
+      fileId: 5,
+      fileName: "fileName5",
+      imgUrl: "/testImg.jpg",
+    },
+  ]);
   const [page, setPage] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -93,7 +146,7 @@ export default function MainPage() {
     size: "number",
     createdAt: "date",
     updatedAt: "date",
-    aiType: "string",
+    aiType: "stirng",
     fileUrl: "/testImg.jpg",
     imgUrl: "/testImg.jpg",
   });
@@ -118,6 +171,16 @@ export default function MainPage() {
   const lastImageRef = useRef(null);
   const isLastPage = useRef(false);
 
+  useEffect(() => {
+    const loadUserInfo = async () => {
+      const userInfo = await fetchUserInfo();
+      if (userInfo) {
+        setUser(userInfo);
+      }
+    };
+    loadUserInfo();
+  }, []);
+
   const openModal = async (fileId) => {
     setIsModalOpen(true);
     const fetchedFile = await fetchFile(fileId);
@@ -130,9 +193,9 @@ export default function MainPage() {
   };
 
   const loadMoreImages = useCallback(async () => {
-    if (!isLastPage.current && !isLoading) {
+    if (!isLastPage.current) {
       setIsLoading(true);
-      const newImages = await fetchImages(userId, page, sortKey, sortOrder);
+      const newImages = await fetchImages(userId, page);
       if (newImages.length === 0) {
         isLastPage.current = true;
       } else {
@@ -141,17 +204,17 @@ export default function MainPage() {
       }
       setIsLoading(false);
     }
-  }, [userId, page, sortKey, sortOrder, isLoading]);
+  }, [userId, page]);
 
   useEffect(() => {
     if (!observer.current) {
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && !isLoading) {
-          loadMoreImages();
+          setPage((prevPage) => prevPage + 1);
         }
       });
     }
-  }, [isLoading, loadMoreImages]);
+  }, [isLoading]);
 
   useEffect(() => {
     if (lastImageRef.current) {
@@ -160,29 +223,8 @@ export default function MainPage() {
   }, [lastImageRef.current]);
 
   useEffect(() => {
-    const initializeImages = async () => {
-      setIsLoading(true);
-      const initialImages = await fetchImages(userId, 0, sortKey, sortOrder);
-      setImages(initialImages);
-      setIsLoading(false);
-      setPage(1); // 초기화 후 페이지를 1로 설정
-    };
-
-    initializeImages();
-  }, [userId, sortKey, sortOrder]);
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (isSortDropdownOpen && !event.target.closest(".sort-dropdown")) {
-        setIsSortDropdownOpen(false);
-      }
-    };
-
-    document.addEventListener("click", handleClickOutside);
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
-    };
-  }, [isSortDropdownOpen]);
+    loadMoreImages();
+  }, [page]);
 
   const openGameModal = () => {
     setIsGameModalOpen(true);
@@ -251,20 +293,6 @@ export default function MainPage() {
     setContextMenu({ visible: false, x: 0, y: 0, fileId: null });
   };
 
-  const handleSort = (sortKey, sortOrder) => {
-    setSortKey(sortKey);
-    setSortOrder(sortOrder);
-    setIsSortDropdownOpen(false);
-  };
-
-  const toggleSortDropdown = () => {
-    setIsSortDropdownOpen(!isSortDropdownOpen);
-  };
-
-  const toggleSortOrder = () => {
-    setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-  };
-
   return (
     <div>
       <Header />
@@ -281,18 +309,10 @@ export default function MainPage() {
           >
             Game
           </button>
-          <div className="sort-dropdown">
-            <button className="sort-order-button" onClick={toggleSortOrder}>
-              {sortOrder === "asc" ? <AiFillCaretUp /> : <AiFillCaretDown />}
-            </button>
-            <button className="button-sort" onClick={toggleSortDropdown}>
-              <span>{sortKey === "name" ? "이름" : "최종 수정 날짜"}</span>
-            </button>
-            <div className={`sort-options ${isSortDropdownOpen ? "show" : ""}`}>
-              <div onClick={() => handleSort("name", sortOrder)}>이름</div>
-              <div onClick={() => handleSort("date", sortOrder)}>수정 날짜</div>
-            </div>
-          </div>
+          <button className="button-sort">
+            <span>정렬</span>
+            <AiFillCaretDown />
+          </button>
         </div>
         {isGameModalOpen && <GameComponent onClose={closeGameModal} />}
         <div className="container">
