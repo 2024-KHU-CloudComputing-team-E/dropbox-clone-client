@@ -1,62 +1,81 @@
+/* UploadPage.css */
+.layout {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* 화면 전체 높이 설정 */
+  box-sizing: border-box; /* padding과 border를 포함한 크기 계산 */
+  background-color: #fafafa; /* 배경색 설정 */
+}
+
 .preview {
-  width: 300px;
-  height: 150px;
-  margin: auto;
+  width: 500px; /* 신용카드 황금비율에 맞춘 너비 설정 */
+  height: calc(500px / 1.618); /* 황금비율에 맞춘 높이 설정 */
+  padding: 20px; /* 내부 여백 설정 */
   background-color: #fff;
-  border-radius: 5px;
-  border: 3px dashed #eee;
-  padding: 70px;
+  border-radius: 10px;
+  border: 1px solid #dbdbdb;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  transition: border-color 0.3s, background-color 0.3s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .preview:hover {
-  border-color: #111;
+  border-color: #bbb;
 }
 
 .preview_msg {
-  font-weight: 500;
-  font-size: 18px;
+  font-weight: 600;
+  font-size: 20px;
   margin: 20px 0 10px;
+  color: #333;
+}
+
+.preview_desc {
+  font-size: 14px;
+  color: #999;
 }
 
 .preview.active {
-  background-color: #efeef3;
-  border-color: #111;
+  background-color: #f0f0f0;
+  border-color: #333;
 }
 
 .preview_info {
   width: 100%;
   list-style: none;
   padding: 0;
-  gap: 16px;
+  margin: 0;
+}
+
+.preview_info li {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+  border-bottom: 1px solid #dbdbdb;
+  padding: 10px 0;
 }
 
 .preview_info .info_key {
-  display: block;
-  font-weight: 500;
-  font-size: 12px;
-  margin-bottom: 4px;
+  font-weight: 600;
+  color: #333;
+  flex: 0 0 80px; /* 고정 너비 설정 */
 }
 
 .preview_info .info_value {
-  font-size: 14px;
+  font-weight: 400;
+  color: #555;
+  flex: 1; /* 남은 공간 차지 */
+  white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+  overflow: hidden; /* 넘치는 텍스트 숨김 */
+  text-overflow: ellipsis; /* 넘치는 텍스트 말줄임표 */
 }
 
 .file {
   display: none;
-}
-
-.file::file-selector-button {
-  font-size: 14px;
-  background: #fff;
-  border: 1px solid #111;
-  border-radius: 12px;
-  padding: 4px 32px;
-  cursor: pointer;
 }
