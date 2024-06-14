@@ -215,24 +215,24 @@ export default function TrashPage() {
 
   const handleDelete = async () => {
     if (contextMenu.fileId) {
-      //const response = await deleteFilePermanently(contextMenu.fileId);
-      //if (response && response.status === 200) {
-      setImages((prevImages) =>
-        prevImages.filter((image) => image.fileId !== contextMenu.fileId)
-      );
-      // }
+      const response = await deleteFilePermanently(contextMenu.fileId);
+      if (response && response.status === 200) {
+        setImages((prevImages) =>
+          prevImages.filter((image) => image.fileId !== contextMenu.fileId)
+        );
+      }
     }
     setContextMenu({ visible: false, x: 0, y: 0, fileId: null });
   };
 
   const handleRestore = async () => {
     if (contextMenu.fileId) {
-      //const response = await restoreFile(contextMenu.fileId);
-      //if (response && response.status === 200) {
-      setImages((prevImages) =>
-        prevImages.filter((image) => image.fileId !== contextMenu.fileId)
-      );
-      //}
+      const response = await restoreFile(contextMenu.fileId);
+      if (response && response.status === 200) {
+        setImages((prevImages) =>
+          prevImages.filter((image) => image.fileId !== contextMenu.fileId)
+        );
+      }
     }
     setContextMenu({ visible: false, x: 0, y: 0, fileId: null });
   };
@@ -243,9 +243,9 @@ export default function TrashPage() {
 
   const handleDeleteAll = async () => {
     const response = await deleteAllFiles();
-    //if (response && response.status === 200) {
-    setImages([]);
-    //}
+    if (response && response.status === 200) {
+      setImages([]);
+    }
   };
 
   return (
