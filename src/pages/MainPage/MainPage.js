@@ -220,7 +220,7 @@ export default function MainPage() {
 
   const handleDownload = async () => {
     if (contextMenu.fileId) {
-      //const fileUrl = await downloadFile(contextMenu.fileId);
+      const fileUrl = await downloadFile(contextMenu.fileId);
       const fileUrl = "/testImg.jpg";
       const link = document.createElement("a");
       link.href = `${process.env.REACT_APP_BASE_URL}${fileUrl}`;
@@ -238,12 +238,12 @@ export default function MainPage() {
 
   const handleDelete = async () => {
     if (contextMenu.fileId) {
-      //const response = await deleteFile(contextMenu.fileId);
-      //if (response.status === 200) {
-      setImages((prevImages) =>
-        prevImages.filter((image) => image.fileId !== contextMenu.fileId)
-      );
-      //}
+      const response = await deleteFile(contextMenu.fileId);
+      if (response.status === 200) {
+        setImages((prevImages) =>
+          prevImages.filter((image) => image.fileId !== contextMenu.fileId)
+        );
+      }
     }
     setContextMenu({ visible: false, x: 0, y: 0, fileId: null });
   };
