@@ -221,7 +221,6 @@ export default function MainPage() {
   const handleDownload = async () => {
     if (contextMenu.fileId) {
       const fileUrl = await downloadFile(contextMenu.fileId);
-      const fileUrl = "/testImg.jpg";
       const link = document.createElement("a");
       link.href = `${process.env.REACT_APP_BASE_URL}${fileUrl}`;
       link.download = contextMenu.fileName;
