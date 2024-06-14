@@ -17,7 +17,7 @@ const UploadBox = () => {
   const [isActive, setActive] = useState(false);
   const [uploadedInfo, setUploadedInfo] = useState(null);
 
-  //테스트코드
+  // 테스트 코드
   useEffect(() => {
     if (uploadedInfo) {
       console.log(uploadedInfo);
@@ -68,7 +68,16 @@ const UploadBox = () => {
 
   const setFileInfo = (file) => {
     const { name, size: byteSize, type } = file;
-    const size = (byteSize / (1024 * 1024)).toFixed(2) + "mb";
+    let size;
+    if (byteSize >= 1024 * 1024 * 1024) {
+      size = Math.floor(byteSize / (1024 * 1024 * 1024)) + "GB";
+    } else if (byteSize >= 1024 * 1024) {
+      size = Math.floor(byteSize / (1024 * 1024)) + "MB";
+    } else if (byteSize >= 1024) {
+      size = Math.floor(byteSize / 1024) + "KB";
+    } else {
+      size = byteSize + "B";
+    }
     setUploadedInfo({ name, size, type });
   };
 
@@ -104,7 +113,6 @@ const UploadBox = () => {
         ) : (
           <>
             <p className="preview_msg">클릭 혹은 파일을 이곳에 드롭하세요.</p>
-            <p className="preview_desc">여기다가 보조문구를 적는다.</p>
           </>
         )}
       </label>
