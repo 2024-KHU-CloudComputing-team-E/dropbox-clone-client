@@ -26,6 +26,7 @@ const fetchImages = async (userId, page, sortKey, sortOrder) => {
 
 // 파일 상세보기 조회 요청
 const fetchFile = async (fileId) => {
+  console.log("fetchFile", fileId);
   try {
     const response = await axios.get(`${BASE_URL}/api/${fileId}`);
     return response.data;
@@ -37,6 +38,7 @@ const fetchFile = async (fileId) => {
 
 // 유저 정보 요청
 const fetchUserInfo = async () => {
+  console.log("fetchUserInfo");
   try {
     const response = await axios.get(`${BASE_URL}/api/user/logined`);
     return response.data;
@@ -49,6 +51,7 @@ const fetchUserInfo = async () => {
 
 // 파일 다운로드 요청
 const downloadFile = async (fileId) => {
+  console.log("downloadFile", fileId);
   try {
     const response = await axios.get(
       `${BASE_URL}/api/downloadFile?fileId=${fileId}`
@@ -62,6 +65,7 @@ const downloadFile = async (fileId) => {
 
 // 파일 삭제 요청
 const deleteFile = async (fileId) => {
+  console.log("deleteFile", fileId);
   try {
     const response = await axios.post(
       `${BASE_URL}/api/deleteFile/moveFileToRecycleBin?fileId=${fileId}`
