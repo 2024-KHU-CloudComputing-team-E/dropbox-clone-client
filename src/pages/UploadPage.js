@@ -48,7 +48,7 @@ const UploadBox = () => {
     const formData = new FormData();
     formData.append("file", file);
 
-    fetch("/upload_file", {
+    fetch("/api/uploadfile/file", {
       method: "POST",
       body: formData,
     })
@@ -99,7 +99,7 @@ const UploadBox = () => {
   );
 
   return (
-    <div className="layout">
+    <div className="uploadPageLayout">
       <label
         className={`preview${isActive ? " active" : ""}`}
         onDragEnter={handleDragStart}
