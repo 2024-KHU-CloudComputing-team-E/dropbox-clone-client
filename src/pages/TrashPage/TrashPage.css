@@ -1,7 +1,5 @@
-/* MainPage.css */
 .layout {
-  padding: 80px;
-  padding-left: 255px;
+  padding: 100px 50px 20px 350px; /* 상단, 우측, 하단, 좌측 여백을 설정하여 겹침 방지 */
   position: relative; 
 }
 
@@ -12,7 +10,7 @@
   margin-bottom: 50px;
 }
 
-.button-type, .button-sort, .game-button, .button-clear {
+.button-type, .button-sort, .game-button {
   border-radius: 12px;
   padding: 10px 20px;
   font-size: 16px;
@@ -84,15 +82,6 @@
   to {
     visibility: hidden;
   }
-}
-
-.user-info {
-  position: absolute;
-  top: 0;
-  right: 100px;
-  margin: 20px;
-  font-size: 18px;
-  color: #333;
 }
 
 .context-menu {

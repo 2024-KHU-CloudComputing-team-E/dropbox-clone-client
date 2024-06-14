@@ -1,13 +1,41 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import axios from "axios";
 import Dropdown from "react-bootstrap/Dropdown";
 import ListGroup from "react-bootstrap/ListGroup";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Leftbar.css";
 
+const BASE_URL = process.env.REACT_APP_BASE_URL;
+
+// 유저 정보 요청
+const fetchUserInfo = async () => {
+  try {
+    const response = await axios.get(`${BASE_URL}/api/user/logined`);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch user info", error);
+    return null;
+  }
+};
+
 function Leftbar() {
   const location = useLocation();
+  const [user, setUser] = useState({
+    email: "email@gmail.com",
+    userName: "userName",
+  });
+
+  useEffect(() => {
+    const loadUserInfo = async () => {
+      const userInfo = await fetchUserInfo();
+      if (userInfo) {
+        setUser(userInfo);
+      }
+    };
+    loadUserInfo();
+  }, []);
 
   return (
     <div className="leftbar">
@@ -15,6 +43,12 @@ function Leftbar() {
         <img src={"logo.png"} alt="logo" className="logo" />
         <h2>InstaBox</h2>
       </div>
+      {user && (
+        <div className="user-info">
+          <div>{user.userName}</div>
+          <div>{user.email}</div>
+        </div>
+      )}
       <ListGroup>
         <ListGroup.Item
           action
