@@ -17,6 +17,7 @@ const fetchImages = async (userId, page, sortKey, sortOrder) => {
     const response = await axios.get(
       `${BASE_URL}/api/files?userId=${userId}&page=${page}&sortKey=${sortKey}&sortOrder=${sortOrder}`
     );
+    console.log(response.data.images);
     return response.data.images;
   } catch (error) {
     console.error("Failed to fetch images", error);
