@@ -199,7 +199,7 @@ export default function MainPage() {
   const loadMoreImages = useCallback(async () => {
     if (!isLastPage.current) {
       setIsLoading(true);
-      const newImages = await fetchImages(userId, page);
+      const newImages = await fetchImages(userId, page, sortKey, sortOrder);
       if (newImages.length === 0) {
         isLastPage.current = true;
       } else {
