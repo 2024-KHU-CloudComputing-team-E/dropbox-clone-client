@@ -1,77 +1,69 @@
 .layout {
-  padding: 100px 20px 20px 275px; /* 상단, 우측, 하단, 좌측 여백을 설정하여 겹침 방지 */
+  padding: 100px 50px 20px 350px; /* 상단, 우측, 하단, 좌측 여백을 설정하여 겹침 방지 */
   position: relative; 
 }
 
 .button-container {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   font-size: 20px;
-  margin-bottom: 50px;
+  margin-bottom: 30px;
 }
 
-.button-type, .button-sort, .game-button {
-  border-radius: 12px;
+.button-type, .button-sort, .game-button, .sort-order-button {
+  border-radius: 8px;
   padding: 10px 20px;
   font-size: 16px;
   border: none;
   cursor: pointer;
-  transition: background-color 0.3s;
+  background-color: #fff;
+  color: #333;
+  transition: background-color 0.3s, box-shadow 0.3s;
 }
 
-.button-type:hover, .button-sort:hover, .game-button:hover {
-  background-color: #f0f0f0;
-}
-
-.container::-webkit-scrollbar {
-  height: 10px;
-}
-
-.container::-webkit-scrollbar-thumb {
-  background-color: #2f3542;
-  border-radius: 10px;
-}
-
-.container::-webkit-scrollbar-track {
-  background-color: grey;
-  border-radius: 10px;
-  box-shadow: inset 0px 0px 5px white;
+.button-type:hover, .button-sort:hover, .game-button:hover, .sort-order-button:hover {
+  background-color: #e2e2e2;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .container {
   display: grid;
-  grid-gap: 70px;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  padding-bottom: 30px;
 }
 
 .item {
-  border: solid #ccc 1px;
-  border-radius: 20px;
+  border: solid #ddd 1px;
+  border-radius: 12px;
   background-color: #fff;
-  padding: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
   transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .item:hover {
-  transform: scale(1.05);
+  transform: scale(1.03);
   box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
 }
 
 .item div {
   margin-bottom: 10px;
   margin-left: 10px;
+  font-weight: bold;
+  color: #555;
 }
 
 .item img {
   width: 100%;
-  border-radius: 10px;
+  border-radius: 8px;
   transition: transform 0.3s, opacity 0.3s;
 }
 
 .item img:hover {
-  transform: scale(1.1);
-  opacity: 0.9;
+  transform: scale(1.05);
+  opacity: 0.85;
 }
 
 .game-button.blinking {
@@ -84,33 +76,26 @@
   }
 }
 
-.user-info {
-  position: absolute;
-  top: 80px; /* 헤더 높이만큼 아래로 이동 */
-  right: 20px; /* 좌측 여백 */
-  font-size: 18px;
-  color: #333;
-  z-index: 1001; /* 레프트바보다 위에 표시되도록 z-index 설정 */
-}
-
 .context-menu {
   position: absolute;
-  background-color: white;
-  border: 1px solid #ccc;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  background-color: #fff;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   z-index: 1000;
   width: 150px;
-  opacity: 0;
+  border-radius: 8px;
+  overflow: hidden;
   animation: fadeIn 0.3s forwards;
 }
 
 .context-menu-item {
-  padding: 10px;
+  padding: 12px;
   cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .context-menu-item:hover {
-  background-color: #f0f0f0;
+  background-color: #f4f4f4;
 }
 
 @keyframes fadeIn {
@@ -120,4 +105,40 @@
   to {
     opacity: 1;
   }
+}
+
+.sort-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.sort-order-button {
+  margin-right: 10px;
+}
+
+.sort-options {
+  display: none;
+  position: absolute;
+  background-color: #fff;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.sort-options.show {
+  display: block;
+}
+
+.sort-options div {
+  color: #333;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.sort-options div:hover {
+  background-color: #f4f4f4;
 }

@@ -86,17 +86,17 @@ export default function TrashPage() {
   const [images, setImages] = useState([
     {
       fileId: 1,
-      fileName: "fileName",
+      fileName: "fileName1",
       imgUrl: "/testImg.jpg",
     },
     {
       fileId: 2,
-      fileName: "fileName",
+      fileName: "fileName2",
       imgUrl: "/testImg.jpg",
     },
     {
       fileId: 3,
-      fileName: "fileName",
+      fileName: "fileName3",
       imgUrl: "/testImg.jpg",
     },
     {
@@ -145,16 +145,6 @@ export default function TrashPage() {
   const observer = useRef(null);
   const lastImageRef = useRef(null);
   const isLastPage = useRef(false);
-
-  useEffect(() => {
-    const loadUserInfo = async () => {
-      const userInfo = await fetchUserInfo();
-      if (userInfo) {
-        setUser(userInfo);
-      }
-    };
-    loadUserInfo();
-  }, []);
 
   const loadMoreImages = useCallback(async () => {
     if (!isLastPage.current) {
@@ -263,12 +253,6 @@ export default function TrashPage() {
       <Header />
       <Leftbar />
       <div className="layout">
-        {user && (
-          <div className="user-info">
-            <div>{user.userName}</div>
-            <div>{user.email}</div>
-          </div>
-        )}
         <div className="button-container">
           <button className="button-type">
             <span>유형</span>
