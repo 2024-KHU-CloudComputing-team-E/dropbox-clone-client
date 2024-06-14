@@ -94,7 +94,7 @@ export default function MainPage() {
     size: "number",
     createdAt: "date",
     updatedAt: "date",
-    aiType: "stirng",
+    aiType: "string",
     fileUrl: "/testImg.jpg",
     imgUrl: "/testImg.jpg",
   });
@@ -122,7 +122,7 @@ export default function MainPage() {
   const openModal = async (fileId) => {
     setIsModalOpen(true);
     const fetchedFile = await fetchFile(fileId);
-    //setFile(fetchedFile);
+    setFile(fetchedFile);
   };
 
   const closeModal = () => {
@@ -131,7 +131,7 @@ export default function MainPage() {
   };
 
   const loadMoreImages = useCallback(async () => {
-    if (!isLastPage.current) {
+    if (!isLastPage.current && !isLoading) {
       setIsLoading(true);
       const newImages = await fetchImages(userId, page, sortKey, sortOrder);
       if (newImages.length === 0) {
@@ -142,17 +142,17 @@ export default function MainPage() {
       }
       setIsLoading(false);
     }
-  }, [userId, page, sortKey, sortOrder]);
+  }, [userId, page, sortKey, sortOrder, isLoading]);
 
   useEffect(() => {
     if (!observer.current) {
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && !isLoading) {
-          setPage((prevPage) => prevPage + 1);
+          loadMoreImages();
         }
       });
     }
-  }, [isLoading]);
+  }, [isLoading, loadMoreImages]);
 
   useEffect(() => {
     if (lastImageRef.current) {
@@ -166,6 +166,7 @@ export default function MainPage() {
       const initialImages = await fetchImages(userId, 0, sortKey, sortOrder);
       setImages(initialImages);
       setIsLoading(false);
+      setPage(1); // 초기화 후 페이지를 1로 설정
     };
 
     initializeImages();
