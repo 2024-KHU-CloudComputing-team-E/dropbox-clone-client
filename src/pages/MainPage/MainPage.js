@@ -84,58 +84,7 @@ const deleteFile = async (fileId) => {
 
 export default function MainPage() {
   const { userId } = useParams();
-  const [images, setImages] = useState([
-    {
-      fileId: 1,
-      fileName: "fileName1",
-      imgUrl: "/testImg.jpg",
-    },
-    {
-      fileId: 2,
-      fileName: "fileName2",
-      imgUrl: "/testImg.jpg",
-    },
-    {
-      fileId: 3,
-      fileName: "fileName3",
-      imgUrl: "/testImg.jpg",
-    },
-    {
-      fileId: 4,
-      fileName: "fileName4",
-      imgUrl: "/testImg.jpg",
-    },
-    {
-      fileId: 5,
-      fileName: "fileName5",
-      imgUrl: "/testImg.jpg",
-    },
-    {
-      fileId: 1,
-      fileName: "fileName1",
-      imgUrl: "/testImg.jpg",
-    },
-    {
-      fileId: 2,
-      fileName: "fileName2",
-      imgUrl: "/testImg.jpg",
-    },
-    {
-      fileId: 3,
-      fileName: "fileName3",
-      imgUrl: "/testImg.jpg",
-    },
-    {
-      fileId: 4,
-      fileName: "fileName4",
-      imgUrl: "/testImg.jpg",
-    },
-    {
-      fileId: 5,
-      fileName: "fileName5",
-      imgUrl: "/testImg.jpg",
-    },
-  ]);
+  const [images, setImages] = useState([]);
   const [page, setPage] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -257,14 +206,15 @@ export default function MainPage() {
     event.preventDefault();
     setContextMenu({
       visible: true,
-      x: event.clientX,
-      y: event.clientY,
+      x: event.clientX + window.scrollX,
+      y: event.clientY + window.scrollY,
       fileId,
       fileName,
     });
   };
 
   const handleDownload = async () => {
+    console.log("handleDownload", contextMenu.fileId);
     if (contextMenu.fileId) {
       const fileUrl = await downloadFile(contextMenu.fileId);
       const link = document.createElement("a");
@@ -357,7 +307,7 @@ export default function MainPage() {
         {contextMenu.visible && (
           <div
             className="context-menu"
-            style={{ top: contextMenu.y, left: contextMenu.x }}
+            style={{ top: `${contextMenu.y}px`, left: `${contextMenu.x}px` }}
             onClick={closeContextMenu} // 클릭 시 컨텍스트 메뉴 닫기
           >
             <div className="context-menu-item" onClick={handleDownload}>
