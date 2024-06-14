@@ -127,7 +127,7 @@ export default function MainPage() {
 
   const closeModal = () => {
     setIsModalOpen(false);
-    //setFile([]);
+    setFile([]);
   };
 
   const loadMoreImages = useCallback(async () => {
