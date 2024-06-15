@@ -8,7 +8,7 @@ import { useParams } from "react-router-dom";
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
-// 메인페이지 무한 스크롤 이미지 요청
+// 휴지통 무한 스크롤 이미지 요청
 const fetchImages = async (userId, page, sortKey, sortOrder) => {
   console.log("fetchImages", userId, page, sortKey, sortOrder);
   try {
@@ -98,10 +98,7 @@ export default function MainPage() {
   const [file, setFile] = useState({});
   const [isButtonBlinking, setIsButtonBlinking] = useState(false);
   const [isGameModalOpen, setIsGameModalOpen] = useState(false);
-  const [user, setUser] = useState({
-    email: "email@gmail.com",
-    userId: "",
-  });
+  const [user, setUser] = useState({});
   const [contextMenu, setContextMenu] = useState({
     visible: false,
     x: 0,
@@ -139,7 +136,7 @@ export default function MainPage() {
       setImages((prevImages) => [...prevImages, ...newImages]);
     }
     setIsLoading(false);
-  }, [user, page, sortKey, sortOrder]);
+  }, [user.userId, page, sortKey, sortOrder]);
 
   useEffect(() => {
     if (!observer.current) {
@@ -165,7 +162,7 @@ export default function MainPage() {
   useEffect(() => {
     loadMoreImages();
     setInitialLoad(false); // 초기 로딩 후 상태 변경
-  }, []);
+  }, [user.userId]);
 
   useEffect(() => {
     if (initialLoad) {
