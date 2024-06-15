@@ -25,6 +25,7 @@ function Leftbar() {
   const [user, setUser] = useState({
     email: "email@gmail.com",
     userName: "userName",
+    userId: "userId",
   });
 
   useEffect(() => {
@@ -59,8 +60,8 @@ function Leftbar() {
         </ListGroup.Item>
         <ListGroup.Item
           action
-          href="/storage"
-          active={location.pathname === "/storage"}
+          href={`/${user.userId}`}
+          active={location.pathname === `/${user.userId}`}
         >
           저장소
         </ListGroup.Item>
