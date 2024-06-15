@@ -94,6 +94,7 @@ function Leftbar() {
             to={`/${user.userId}`}
             variant="outline-secondary"
             className="m-1"
+            onClick={() => handleRedirect(user.userId)}
           >
             내 저장소로 이동하기
           </Button>
