@@ -12,11 +12,13 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 // 메인페이지 무한 스크롤 이미지 요청
 const fetchImages = async (userId, page, sortKey, sortOrder) => {
+  console.log("fetchImages", userId, page, sortKey, sortOrder);
   try {
     const response = await axios.get(
       `${BASE_URL}/api/files?userId=${userId}&page=${page}&sortKey=${sortKey}&sortOrder=${sortOrder}`
     );
-    return response.data.images;
+    console.log(response.data);
+    return response.data;
   } catch (error) {
     console.error("Failed to fetch images", error);
     return [];
@@ -25,8 +27,10 @@ const fetchImages = async (userId, page, sortKey, sortOrder) => {
 
 // 파일 상세보기 조회 요청
 const fetchFile = async (fileId) => {
+  console.log("fetchFile", fileId);
   try {
-    const response = await axios.get(`${BASE_URL}/api/${fileId}`);
+    const response = await axios.get(`${BASE_URL}/api/file/${fileId}`);
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("Failed to fetch files", error);
@@ -38,8 +42,8 @@ const fetchFile = async (fileId) => {
 const fetchUserInfo = async () => {
   try {
     const response = await axios.get(`${BASE_URL}/api/user/logined`);
+    console.log("fetchUserInfo", response.data);
     return response.data;
-    console.log(response.data);
   } catch (error) {
     console.error("Failed to fetch user info", error);
     return null;
@@ -48,6 +52,7 @@ const fetchUserInfo = async () => {
 
 // 파일 다운로드 요청
 const downloadFile = async (fileId) => {
+  console.log("downloadFile", fileId);
   try {
     const response = await axios.get(
       `${BASE_URL}/api/downloadFile?fileId=${fileId}`
@@ -61,9 +66,10 @@ const downloadFile = async (fileId) => {
 
 // 파일 삭제 요청
 const deleteFile = async (fileId) => {
+  console.log("deleteFile", fileId);
   try {
     const response = await axios.post(
-      `${BASE_URL}/api/deleteFile/moveFileToRecycleBin?fileId=${fileId}`
+      `${BASE_URL}/api/deleteFile/moveFileToRecycleBin/${fileId}`
     );
     if (response.status === 200) {
       alert("파일이 휴지통으로 이동했습니다.");
@@ -79,25 +85,13 @@ const deleteFile = async (fileId) => {
 
 export default function MainPage() {
   const { userId } = useParams();
-  const [images, setImages] = useState([]);
   const [page, setPage] = useState(0);
+  const [sortKey, setSortKey] = useState("date");
+  const [sortOrder, setSortOrder] = useState("desc");
+  const [images, setImages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [file, setFile] = useState({
-    fileId: "fileId",
-    comments: [
-      { userId: "userId", comment: "comment" },
-      { userId: "userId", comment: "comment" },
-    ],
-    context: "context",
-    name: "name.jpg",
-    size: "number",
-    createdAt: "date",
-    updatedAt: "date",
-    aiType: "stirng",
-    fileUrl: "/testImg.jpg",
-    imgUrl: "/testImg.jpg",
-  });
+  const [file, setFile] = useState({});
   const [isButtonBlinking, setIsButtonBlinking] = useState(false);
   const [isGameModalOpen, setIsGameModalOpen] = useState(false);
   const [user, setUser] = useState({
@@ -111,37 +105,47 @@ export default function MainPage() {
     fileId: null,
     fileName: null,
   });
-  const [sortKey, setSortKey] = useState("date");
-  const [sortOrder, setSortOrder] = useState("desc");
   const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
+  const [initialLoad, setInitialLoad] = useState(true);
 
   const observer = useRef(null);
   const lastImageRef = useRef(null);
   const isLastPage = useRef(false);
 
+  useEffect(() => {
+    const loadUserInfo = async () => {
+      const userInfo = await fetchUserInfo();
+      if (userInfo) {
+        setUser(userInfo);
+      }
+    };
+    loadUserInfo();
+  }, []);
+
   const openModal = async (fileId) => {
     setIsModalOpen(true);
     const fetchedFile = await fetchFile(fileId);
-    //setFile(fetchedFile);
+    setFile(fetchedFile);
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
-    setFile([]);
+    setFile({});
   };
 
   const loadMoreImages = useCallback(async () => {
-    if (!isLastPage.current) {
-      setIsLoading(true);
-      const newImages = await fetchImages(userId, page, sortKey, sortOrder);
-      if (newImages.length === 0) {
-        isLastPage.current = true;
-      } else {
-        setImages((prevImages) => [...prevImages, ...newImages]);
-        setPage((prevPage) => prevPage + 1);
-      }
-      setIsLoading(false);
+    console.log("loadMoreImages");
+    if (isLastPage.current) {
+      return;
     }
+    setIsLoading(true);
+    const newImages = await fetchImages(userId, page, sortKey, sortOrder);
+    if (newImages.length === 0) {
+      isLastPage.current = true;
+    } else {
+      setImages((prevImages) => [...prevImages, ...newImages]);
+    }
+    setIsLoading(false);
   }, [userId, page, sortKey, sortOrder]);
 
   useEffect(() => {
@@ -158,31 +162,34 @@ export default function MainPage() {
     if (lastImageRef.current) {
       observer.current.observe(lastImageRef.current);
     }
+    return () => {
+      if (lastImageRef.current) {
+        observer.current.unobserve(lastImageRef.current);
+      }
+    };
   }, [lastImageRef.current]);
 
   useEffect(() => {
-    const initializeImages = async () => {
-      setIsLoading(true);
-      const initialImages = await fetchImages(userId, 0, sortKey, sortOrder);
-      setImages(initialImages);
-      setIsLoading(false);
-    };
-
-    initializeImages();
-  }, [userId, sortKey, sortOrder]);
+    loadMoreImages();
+    setInitialLoad(false); // 초기 로딩 후 상태 변경
+  }, []);
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (isSortDropdownOpen && !event.target.closest(".sort-dropdown")) {
-        setIsSortDropdownOpen(false);
-      }
-    };
+    if (initialLoad) {
+      return; // 초기 로딩 시에는 페이지 변경을 무시합니다.
+    }
+    loadMoreImages();
+  }, [page]);
 
-    document.addEventListener("click", handleClickOutside);
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
-    };
-  }, [isSortDropdownOpen]);
+  useEffect(() => {
+    if (initialLoad) {
+      return; // 초기 로딩 시에는 페이지 변경을 무시합니다.
+    }
+    setPage(0);
+    setImages([]);
+    isLastPage.current = false;
+    loadMoreImages();
+  }, [sortKey, sortOrder]);
 
   const openGameModal = () => {
     setIsGameModalOpen(true);
@@ -211,8 +218,8 @@ export default function MainPage() {
     event.preventDefault();
     setContextMenu({
       visible: true,
-      x: event.clientX,
-      y: event.clientY,
+      x: event.clientX + window.scrollX,
+      y: event.clientY + window.scrollY,
       fileId,
       fileName,
     });
@@ -220,10 +227,9 @@ export default function MainPage() {
 
   const handleDownload = async () => {
     if (contextMenu.fileId) {
-      //const fileUrl = await downloadFile(contextMenu.fileId);
-      const fileUrl = "/testImg.jpg";
+      const fileUrl = await downloadFile(contextMenu.fileId);
       const link = document.createElement("a");
-      link.href = `${process.env.REACT_APP_BASE_URL}${fileUrl}`;
+      link.href = fileUrl.fileUrl;
       link.download = contextMenu.fileName;
       document.body.appendChild(link);
 
@@ -238,12 +244,12 @@ export default function MainPage() {
 
   const handleDelete = async () => {
     if (contextMenu.fileId) {
-      //const response = await deleteFile(contextMenu.fileId);
-      //if (response.status === 200) {
-      setImages((prevImages) =>
-        prevImages.filter((image) => image.fileId !== contextMenu.fileId)
-      );
-      //}
+      const response = await deleteFile(contextMenu.fileId);
+      if (response.status === 200) {
+        setImages((prevImages) =>
+          prevImages.filter((image) => image.fileId !== contextMenu.fileId)
+        );
+      }
     }
     setContextMenu({ visible: false, x: 0, y: 0, fileId: null });
   };
@@ -252,19 +258,32 @@ export default function MainPage() {
     setContextMenu({ visible: false, x: 0, y: 0, fileId: null });
   };
 
-  const handleSort = (sortKey, sortOrder) => {
+  const handleSort = (sortKey) => {
     setSortKey(sortKey);
-    setSortOrder(sortOrder);
-    setIsSortDropdownOpen(false);
+    setIsSortDropdownOpen(!isSortDropdownOpen);
+  };
+
+  const handleSortOrder = () => {
+    setSortOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"));
   };
 
   const toggleSortDropdown = () => {
     setIsSortDropdownOpen(!isSortDropdownOpen);
   };
 
-  const toggleSortOrder = () => {
-    setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-  };
+  // 드롭다운 외부 클릭 시 닫기
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isSortDropdownOpen && !event.target.closest(".sort-dropdown")) {
+        setIsSortDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [isSortDropdownOpen]);
 
   return (
     <div>
@@ -283,15 +302,16 @@ export default function MainPage() {
             Game
           </button>
           <div className="sort-dropdown">
-            <button className="sort-order-button" onClick={toggleSortOrder}>
+            <button className="sort-order-button" onClick={handleSortOrder}>
               {sortOrder === "asc" ? <AiFillCaretUp /> : <AiFillCaretDown />}
             </button>
             <button className="button-sort" onClick={toggleSortDropdown}>
               <span>{sortKey === "name" ? "이름" : "최종 수정 날짜"}</span>
+              <AiFillCaretDown />
             </button>
             <div className={`sort-options ${isSortDropdownOpen ? "show" : ""}`}>
-              <div onClick={() => handleSort("name", sortOrder)}>이름</div>
-              <div onClick={() => handleSort("date", sortOrder)}>수정 날짜</div>
+              <div onClick={() => handleSort("name")}>이름</div>
+              <div onClick={() => handleSort("date")}>최종 수정 날짜</div>
             </div>
           </div>
         </div>
@@ -306,11 +326,11 @@ export default function MainPage() {
                   className="item"
                   onClick={() => openModal(image.fileId)}
                   onContextMenu={(event) =>
-                    handleContextMenu(event, image.fileId)
+                    handleContextMenu(event, image.fileId, image.fileName)
                   }
                 >
                   <div>{image.fileName}</div>
-                  <img src={image.imgUrl} alt="이미지" />
+                  <img src={image.imageUrl} alt="이미지" />
                 </div>
               );
             } else {
@@ -324,7 +344,7 @@ export default function MainPage() {
                   }
                 >
                   <div>{image.fileName}</div>
-                  <img src={image.imgUrl} alt="이미지" />
+                  <img src={image.imageUrl} alt="이미지" />
                 </div>
               );
             }
@@ -334,7 +354,7 @@ export default function MainPage() {
         {contextMenu.visible && (
           <div
             className="context-menu"
-            style={{ top: contextMenu.y, left: contextMenu.x }}
+            style={{ top: `${contextMenu.y}px`, left: `${contextMenu.x}px` }}
             onClick={closeContextMenu} // 클릭 시 컨텍스트 메뉴 닫기
           >
             <div className="context-menu-item" onClick={handleDownload}>
