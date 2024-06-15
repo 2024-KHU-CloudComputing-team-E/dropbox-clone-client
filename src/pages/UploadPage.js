@@ -16,6 +16,7 @@ export default function UploadPage() {
 const UploadBox = () => {
   const [isActive, setActive] = useState(false);
   const [uploadedInfo, setUploadedInfo] = useState(null);
+  const [file, setFile] = useState(null);
 
   // 테스트 코드
   useEffect(() => {
@@ -44,6 +45,7 @@ const UploadBox = () => {
       return;
     }
     setFileInfo(file);
+    setFile(file);
 
     const formData = new FormData();
     formData.append("file", file);
@@ -60,9 +62,12 @@ const UploadBox = () => {
       })
       .then((data) => {
         console.log("Upload successful", data);
+        alert("파일 업로드가 성공했습니다!");
+        window.location.reload();
       })
       .catch((err) => {
         console.error("Error during file upload: ", err);
+        alert("파일 업로드 중 오류가 발생했습니다.");
       });
   };
 
@@ -98,6 +103,33 @@ const UploadBox = () => {
     </ul>
   );
 
+  const handleFileUpload = () => {
+    if (!file) {
+      alert("파일을 선택해주세요.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    fetch("/api/uploadfile/file", {
+      method: "POST",
+      body: formData,
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        console.log("Upload successful", data);
+      })
+      .catch((err) => {
+        console.error("Error during file upload: ", err);
+      });
+  };
+
   return (
     <div className="uploadPageLayout">
       <label
@@ -116,6 +148,9 @@ const UploadBox = () => {
           </>
         )}
       </label>
+      <button className="uploadButton" onClick={handleFileUpload}>
+        업로드
+      </button>
     </div>
   );
 };
