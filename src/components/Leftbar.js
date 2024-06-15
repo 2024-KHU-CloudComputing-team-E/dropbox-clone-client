@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams, Link } from "react-router-dom";
 import axios from "axios";
 import Dropdown from "react-bootstrap/Dropdown";
 import ListGroup from "react-bootstrap/ListGroup";
@@ -7,7 +7,6 @@ import ProgressBar from "react-bootstrap/ProgressBar";
 import Button from "react-bootstrap/Button"; // Button import 추가
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Leftbar.css";
-import { useParams } from "react-router-dom";
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -53,10 +52,10 @@ const getFollowerCount = async (userId) => {
 
 function Leftbar() {
   const location = useLocation();
+  const { userId } = useParams();
   const [user, setUser] = useState({});
   const [followingCount, setFollowingCount] = useState(0);
   const [followerCount, setFollowerCount] = useState(0);
-  const { userId } = useParams();
 
   useEffect(() => {
     const loadUserInfo = async () => {
@@ -95,12 +94,20 @@ function Leftbar() {
               팔로워 {followerCount}
             </Button>
           </div>
+          <Button
+            as={Link}
+            to={`/${user.userId}`}
+            variant="outline-secondary"
+            className="m-1"
+          >
+            내 저장소로 이동하기
+          </Button>
         </div>
       )}
       <ListGroup>
         <ListGroup.Item
-          action
-          href={`/${user.userId}`}
+          as={Link}
+          to={`/${user.userId}`}
           active={
             location.pathname !== "/upload" &&
             location.pathname !== "/favorites" &&
@@ -113,22 +120,22 @@ function Leftbar() {
         {isOwner && (
           <>
             <ListGroup.Item
-              action
-              href="/upload"
+              as={Link}
+              to="/upload"
               active={location.pathname === "/upload"}
             >
               업로드
             </ListGroup.Item>
             <ListGroup.Item
-              action
-              href="/favorites"
+              as={Link}
+              to="/favorites"
               active={location.pathname === "/favorites"}
             >
               즐겨찾기
             </ListGroup.Item>
             <ListGroup.Item
-              action
-              href="/trash"
+              as={Link}
+              to="/trash"
               active={location.pathname === "/trash"}
             >
               휴지통
