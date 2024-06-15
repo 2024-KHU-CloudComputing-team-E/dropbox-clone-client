@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useLocation, useParams, Link } from "react-router-dom";
+import { useLocation, useParams, Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Dropdown from "react-bootstrap/Dropdown";
 import ListGroup from "react-bootstrap/ListGroup";
@@ -25,25 +25,25 @@ const fetchUserInfo = async () => {
 function Leftbar() {
   const location = useLocation();
   const { userId } = useParams();
+  const navigate = useNavigate();
   const [user, setUser] = useState({});
   const [followingCount, setFollowingCount] = useState(0);
   const [followerCount, setFollowerCount] = useState(0);
   const [showFollowingModal, setShowFollowingModal] = useState(false);
   const [showFollowerModal, setShowFollowerModal] = useState(false);
 
+  const loadUserInfo = async () => {
+    const userInfo = await fetchUserInfo();
+    if (userInfo) {
+      setUser(userInfo);
+      setFollowingCount(userInfo.followings.length);
+      setFollowerCount(userInfo.followers.length);
+    }
+  };
+
   useEffect(() => {
-    const loadUserInfo = async () => {
-      const userInfo = await fetchUserInfo();
-      if (userInfo) {
-        setUser(userInfo);
-        const following = userInfo.followings.length;
-        const follower = userInfo.followers.length;
-        setFollowingCount(following);
-        setFollowerCount(follower);
-      }
-    };
     loadUserInfo();
-  }, []);
+  }, [location.key]); // location.key를 감시합니다.
 
   const isOwner =
     user.userId &&
@@ -55,6 +55,13 @@ function Leftbar() {
 
   const handleShowFollower = () => setShowFollowerModal(true);
   const handleCloseFollower = () => setShowFollowerModal(false);
+
+  const handleRedirect = (userId) => {
+    navigate(`/${userId}`);
+    handleCloseFollowing();
+    handleCloseFollower();
+    window.location.reload();
+  };
 
   return (
     <div className="leftbar">
@@ -147,9 +154,8 @@ function Leftbar() {
             {user.followings &&
               user.followings.map((following, index) => (
                 <ListGroup.Item
-                  as={Link}
-                  to={`/${following.userId}`}
                   key={index}
+                  onClick={() => handleRedirect(following.userId)}
                 >
                   {following.userName} ({following.email})
                 </ListGroup.Item>
@@ -173,9 +179,8 @@ function Leftbar() {
             {user.followers &&
               user.followers.map((follower, index) => (
                 <ListGroup.Item
-                  as={Link}
-                  to={`/${follower.userId}`}
                   key={index}
+                  onClick={() => handleRedirect(follower.userId)}
                 >
                   {follower.userName} ({follower.email})
                 </ListGroup.Item>
