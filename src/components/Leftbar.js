@@ -22,11 +22,7 @@ const fetchUserInfo = async () => {
 
 function Leftbar() {
   const location = useLocation();
-  const [user, setUser] = useState({
-    email: "email@gmail.com",
-    userName: "userName",
-    userId: "userId",
-  });
+  const [user, setUser] = useState({});
 
   useEffect(() => {
     const loadUserInfo = async () => {
@@ -61,7 +57,11 @@ function Leftbar() {
         <ListGroup.Item
           action
           href={`/${user.userId}`}
-          active={location.pathname === `/${user.userId}`}
+          active={
+            location.pathname !== "/upload" &&
+            location.pathname !== "/favorites" &&
+            location.pathname !== "/trash"
+          }
         >
           저장소
         </ListGroup.Item>
