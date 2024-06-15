@@ -5,6 +5,7 @@ import Dropdown from "react-bootstrap/Dropdown";
 import ListGroup from "react-bootstrap/ListGroup";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import Button from "react-bootstrap/Button"; // Button import 추가
+import Modal from "react-bootstrap/Modal"; // Modal import 추가
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Leftbar.css";
 
@@ -21,49 +22,22 @@ const fetchUserInfo = async () => {
   }
 };
 
-// 팔로잉 카운트 요청
-const getFollowingCount = async (userId) => {
-  try {
-    const response = await axios.get(
-      `${BASE_URL}/api/ff/followingCount/${userId}`
-    );
-    console.log("getFollowingCount", response.data);
-    return response.data;
-  } catch (error) {
-    console.error("Failed to get following count", error);
-    return 0;
-  }
-};
-
-// 팔로워 카운트 요청
-const getFollowerCount = async (userId) => {
-  try {
-    const response = await axios.get(
-      `${BASE_URL}/api/ff/followerCount/${userId}`
-    );
-    console.log("getFollowerCount", response.data);
-
-    return response.data;
-  } catch (error) {
-    console.error("Failed to get follower count", error);
-    return 0;
-  }
-};
-
 function Leftbar() {
   const location = useLocation();
   const { userId } = useParams();
   const [user, setUser] = useState({});
   const [followingCount, setFollowingCount] = useState(0);
   const [followerCount, setFollowerCount] = useState(0);
+  const [showFollowingModal, setShowFollowingModal] = useState(false);
+  const [showFollowerModal, setShowFollowerModal] = useState(false);
 
   useEffect(() => {
     const loadUserInfo = async () => {
       const userInfo = await fetchUserInfo();
       if (userInfo) {
         setUser(userInfo);
-        const following = await getFollowingCount(userInfo.userId);
-        const follower = await getFollowerCount(userInfo.userId);
+        const following = userInfo.followings.length;
+        const follower = userInfo.followers.length;
         setFollowingCount(following);
         setFollowerCount(follower);
       }
@@ -76,6 +50,12 @@ function Leftbar() {
     (user.userId === userId ||
       ["/upload", "/favorites", "/trash"].includes(location.pathname));
 
+  const handleShowFollowing = () => setShowFollowingModal(true);
+  const handleCloseFollowing = () => setShowFollowingModal(false);
+
+  const handleShowFollower = () => setShowFollowerModal(true);
+  const handleCloseFollower = () => setShowFollowerModal(false);
+
   return (
     <div className="leftbar">
       <div className="logo-container">
@@ -87,10 +67,18 @@ function Leftbar() {
           <div>{user.userName}</div>
           <div>{user.email}</div>
           <div className="follow-info">
-            <Button variant="outline-primary" className="m-1">
+            <Button
+              variant="outline-primary"
+              className="m-1"
+              onClick={handleShowFollowing}
+            >
               팔로잉 {followingCount}
             </Button>
-            <Button variant="outline-primary" className="m-1">
+            <Button
+              variant="outline-primary"
+              className="m-1"
+              onClick={handleShowFollower}
+            >
               팔로워 {followerCount}
             </Button>
           </div>
@@ -148,6 +136,50 @@ function Leftbar() {
         100GB 중 18GB 사용
         <ProgressBar now={18} />
       </Dropdown.Item>
+
+      {/* 팔로잉 목록 모달 */}
+      <Modal show={showFollowingModal} onHide={handleCloseFollowing}>
+        <Modal.Header closeButton>
+          <Modal.Title>팔로잉 목록</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <ListGroup>
+            {user.followings &&
+              user.followings.map((following, index) => (
+                <ListGroup.Item key={index}>
+                  {following.userName} ({following.email})
+                </ListGroup.Item>
+              ))}
+          </ListGroup>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseFollowing}>
+            닫기
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* 팔로워 목록 모달 */}
+      <Modal show={showFollowerModal} onHide={handleCloseFollower}>
+        <Modal.Header closeButton>
+          <Modal.Title>팔로워 목록</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <ListGroup>
+            {user.followers &&
+              user.followers.map((follower, index) => (
+                <ListGroup.Item key={index}>
+                  {follower.userName} ({follower.email})
+                </ListGroup.Item>
+              ))}
+          </ListGroup>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseFollower}>
+            닫기
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }
