@@ -50,7 +50,6 @@ const UploadBox = () => {
     const formData = new FormData();
     formData.append("file", file);
 
-
     fetch("/api/uploadfile/file", {
       method: "POST",
       body: formData,
@@ -125,7 +124,6 @@ const UploadBox = () => {
       .catch((err) => {
         console.error("Error during file upload: ", err);
         alert("파일 업로드 중 오류가 발생했습니다.");
-
       });
   };
 

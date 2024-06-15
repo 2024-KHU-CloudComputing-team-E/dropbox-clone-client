@@ -53,7 +53,14 @@
   margin-left: 10px;
   font-weight: bold;
   color: #555;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* 최대 줄 수 */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal; /* 줄바꿈 허용 */
 }
+
 
 .item img {
   width: 100%;
