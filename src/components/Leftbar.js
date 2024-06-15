@@ -146,7 +146,11 @@ function Leftbar() {
           <ListGroup>
             {user.followings &&
               user.followings.map((following, index) => (
-                <ListGroup.Item key={index}>
+                <ListGroup.Item
+                  as={Link}
+                  to={`/${following.userId}`}
+                  key={index}
+                >
                   {following.userName} ({following.email})
                 </ListGroup.Item>
               ))}
@@ -168,7 +172,11 @@ function Leftbar() {
           <ListGroup>
             {user.followers &&
               user.followers.map((follower, index) => (
-                <ListGroup.Item key={index}>
+                <ListGroup.Item
+                  as={Link}
+                  to={`/${follower.userId}`}
+                  key={index}
+                >
                   {follower.userName} ({follower.email})
                 </ListGroup.Item>
               ))}
