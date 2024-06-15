@@ -49,6 +49,27 @@ const UploadBox = () => {
 
     const formData = new FormData();
     formData.append("file", file);
+
+
+    fetch("/api/uploadfile/file", {
+      method: "POST",
+      body: formData,
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        console.log("Upload successful", data);
+        alert("파일 업로드가 성공했습니다!");
+        window.location.reload();
+      })
+      .catch((err) => {
+        console.error("Error during file upload: ", err);
+        alert("파일 업로드 중 오류가 발생했습니다.");
+      });
   };
 
   const setFileInfo = (file) => {
@@ -104,6 +125,7 @@ const UploadBox = () => {
       .catch((err) => {
         console.error("Error during file upload: ", err);
         alert("파일 업로드 중 오류가 발생했습니다.");
+
       });
   };
 
