@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import axios from "axios";
 import Header from "../../components/Header";
 import Leftbar from "../../components/Leftbar";
-import { AiFillCaretDown } from "react-icons/ai";
+import { AiFillCaretDown, AiFillCaretUp } from "react-icons/ai";
 import DetailModal from "../../components/DetailModal/DetailModal";
 import { useParams } from "react-router-dom";
 import GameComponent from "../../components/game";
@@ -85,24 +85,75 @@ const deleteFile = async (fileId) => {
 
 export default function MainPage() {
   const { userId } = useParams();
-  const [images, setImages] = useState([]);
+  const [images, setImages] = useState([
+    //   {
+    //     fileId: 1,
+    //     fileName: "fileName1",
+    //     imgUrl: "/testImg.jpg",
+    //   },
+    //   {
+    //     fileId: 2,
+    //     fileName: "fileName2",
+    //     imgUrl: "/testImg.jpg",
+    //   },
+    //   {
+    //     fileId: 3,
+    //     fileName: "fileName3",
+    //     imgUrl: "/testImg.jpg",
+    //   },
+    //   {
+    //     fileId: 4,
+    //     fileName: "fileName",
+    //     imgUrl: "/testImg.jpg",
+    //   },
+    //   {
+    //     fileId: 5,
+    //     fileName: "fileName",
+    //     imgUrl: "/testImg.jpg",
+    //   },
+    //   {
+    //     fileId: 1,
+    //     fileName: "fileName1",
+    //     imgUrl: "/testImg.jpg",
+    //   },
+    //   {
+    //     fileId: 2,
+    //     fileName: "fileName2",
+    //     imgUrl: "/testImg.jpg",
+    //   },
+    //   {
+    //     fileId: 3,
+    //     fileName: "fileName3",
+    //     imgUrl: "/testImg.jpg",
+    //   },
+    //   {
+    //     fileId: 4,
+    //     fileName: "fileName",
+    //     imgUrl: "/testImg.jpg",
+    //   },
+    //   {
+    //     fileId: 5,
+    //     fileName: "fileName",
+    //     imgUrl: "/testImg.jpg",
+    //   },
+  ]);
   const [page, setPage] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [file, setFile] = useState({
-    fileId: "fileId",
-    comments: [
-      { userId: "userId", comment: "comment" },
-      { userId: "userId", comment: "comment" },
-    ],
-    context: "context",
-    name: "name.jpg",
-    size: "number",
-    createdAt: "date",
-    updatedAt: "date",
-    aiType: "stirng",
-    fileUrl: "/testImg.jpg",
-    imgUrl: "/testImg.jpg",
+    // fileId: "fileId",
+    // comments: [
+    //   { userId: "userId", comment: "comment" },
+    //   { userId: "userId", comment: "comment" },
+    // ],
+    // context: "context",
+    // name: "name.jpg",
+    // size: "number",
+    // createdAt: "date",
+    // updatedAt: "date",
+    // aiType: "stirng",
+    // fileUrl: "/testImg.jpg",
+    // imgUrl: "/testImg.jpg",
   });
   const [isButtonBlinking, setIsButtonBlinking] = useState(false);
   const [isGameModalOpen, setIsGameModalOpen] = useState(false);
@@ -120,6 +171,7 @@ export default function MainPage() {
   const [sortKey, setSortKey] = useState("date");
   const [sortOrder, setSortOrder] = useState("desc");
   const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
+  const [initialLoad, setInitialLoad] = useState(true);
 
   const observer = useRef(null);
   const lastImageRef = useRef(null);
@@ -147,6 +199,7 @@ export default function MainPage() {
   };
 
   const loadMoreImages = useCallback(async () => {
+    console.log("loadMoreImages");
     if (!isLastPage.current) {
       setIsLoading(true);
       const newImages = await fetchImages(userId, page, sortKey, sortOrder);
@@ -158,7 +211,17 @@ export default function MainPage() {
       }
       setIsLoading(false);
     }
-  }, [userId, page]);
+
+    // setIsLoading(true);
+    // const newImages = await fetchImages(userId, page, sortKey, sortOrder);
+    // if (newImages.length === 0) {
+    //   isLastPage.current = true;
+    // } else {
+    //   setImages((prevImages) => [...prevImages, ...newImages]);
+    //   setPage((prevPage) => prevPage + 1);
+    // }
+    // setIsLoading(false);
+  }, [userId, page, sortKey, sortOrder]);
 
   useEffect(() => {
     if (!observer.current) {
@@ -174,11 +237,34 @@ export default function MainPage() {
     if (lastImageRef.current) {
       observer.current.observe(lastImageRef.current);
     }
-  }, [lastImageRef.current]);
+    return () => {
+      if (lastImageRef.current) {
+        observer.current.unobserve(lastImageRef.current);
+      }
+    };
+  }, [lastImageRef]);
 
   useEffect(() => {
     loadMoreImages();
+    setInitialLoad(false); // 초기 로딩 후 상태 변경
+  }, []);
+
+  useEffect(() => {
+    if (initialLoad) {
+      return; // 초기 로딩 시에는 페이지 변경을 무시합니다.
+    }
+    loadMoreImages();
   }, [page]);
+
+  useEffect(() => {
+    if (initialLoad) {
+      return; // 초기 로딩 시에는 페이지 변경을 무시합니다.
+    }
+    setPage(0);
+    setImages([]);
+    isLastPage.current = false;
+    loadMoreImages();
+  }, [sortKey, sortOrder]);
 
   const openGameModal = () => {
     setIsGameModalOpen(true);
@@ -248,6 +334,33 @@ export default function MainPage() {
     setContextMenu({ visible: false, x: 0, y: 0, fileId: null });
   };
 
+  const handleSort = (sortKey) => {
+    setSortKey(sortKey);
+    setIsSortDropdownOpen(!isSortDropdownOpen);
+  };
+
+  const handleSortOrder = () => {
+    setSortOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"));
+  };
+
+  const toggleSortDropdown = () => {
+    setIsSortDropdownOpen(!isSortDropdownOpen);
+  };
+
+  // 드롭다운 외부 클릭 시 닫기
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isSortDropdownOpen && !event.target.closest(".sort-dropdown")) {
+        setIsSortDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [isSortDropdownOpen]);
+
   return (
     <div>
       <Header />
@@ -264,10 +377,19 @@ export default function MainPage() {
           >
             Game
           </button>
-          <button className="button-sort">
-            <span>정렬</span>
-            <AiFillCaretDown />
-          </button>
+          <div className="sort-dropdown">
+            <button className="sort-order-button" onClick={handleSortOrder}>
+              {sortOrder === "asc" ? <AiFillCaretUp /> : <AiFillCaretDown />}
+            </button>
+            <button className="button-sort" onClick={toggleSortDropdown}>
+              <span>{sortKey === "name" ? "이름" : "최종 수정 날짜"}</span>
+              <AiFillCaretDown />
+            </button>
+            <div className={`sort-options ${isSortDropdownOpen ? "show" : ""}`}>
+              <div onClick={() => handleSort("name")}>이름</div>
+              <div onClick={() => handleSort("date")}>최종 수정 날짜</div>
+            </div>
+          </div>
         </div>
         {isGameModalOpen && <GameComponent onClose={closeGameModal} />}
         <div className="container">
