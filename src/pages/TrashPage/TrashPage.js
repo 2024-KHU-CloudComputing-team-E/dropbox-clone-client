@@ -3,16 +3,20 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import axios from "axios";
 import Header from "../../components/Header";
 import Leftbar from "../../components/Leftbar";
-import { AiFillCaretDown } from "react-icons/ai";
-import GameComponent from "../../components/game";
+import { AiFillCaretDown, AiFillCaretUp } from "react-icons/ai";
+import { useParams } from "react-router-dom";
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
-// 휴지통 페이지 무한 스크롤 이미지 요청
-const fetchImages = async (page) => {
+// 메인페이지 무한 스크롤 이미지 요청
+const fetchImages = async (userId, page, sortKey, sortOrder) => {
+  console.log("fetchImages", userId, page, sortKey, sortOrder);
   try {
-    const response = await axios.get(`${BASE_URL}/api/RecycleBin?page=${page}`);
-    return response.data.images;
+    const response = await axios.get(
+      `${BASE_URL}/api/RecycleBin?userId=${userId}&page=${page}&sortKey=${sortKey}&sortOrder=${sortOrder}`
+    );
+    console.log(response.data);
+    return response.data;
   } catch (error) {
     console.error("Failed to fetch images", error);
     return [];
@@ -21,8 +25,10 @@ const fetchImages = async (page) => {
 
 // 유저 정보 요청
 const fetchUserInfo = async () => {
+  console.log("fetchUserInfo");
   try {
     const response = await axios.get(`${BASE_URL}/api/user/logined`);
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("Failed to fetch user info", error);
@@ -34,7 +40,7 @@ const fetchUserInfo = async () => {
 const deleteFilePermanently = async (fileId) => {
   try {
     const response = await axios.post(
-      `${BASE_URL}/api/deleteFile/deleteFileOnRecycleBin?fileId=${fileId}`
+      `${BASE_URL}/api/deleteFile/deleteFileOnRecycleBin/${fileId}`
     );
     if (response.status === 200) {
       alert("파일이 영구적으로 삭제되었습니다.");
@@ -52,7 +58,7 @@ const deleteFilePermanently = async (fileId) => {
 const restoreFile = async (fileId) => {
   try {
     const response = await axios.post(
-      `${BASE_URL}/api/deleteFile/restore?fileId=${fileId}`
+      `${BASE_URL}/api/deleteFile/restore/${fileId}`
     );
     if (response.status === 200) {
       alert("파일이 복원되었습니다.");
@@ -82,57 +88,19 @@ const deleteAllFiles = async () => {
   }
 };
 
-export default function TrashPage() {
-  const [images, setImages] = useState([
-    {
-      fileId: 1,
-      fileName: "fileName1",
-      imgUrl: "/testImg.jpg",
-    },
-    {
-      fileId: 2,
-      fileName: "fileName2",
-      imgUrl: "/testImg.jpg",
-    },
-    {
-      fileId: 3,
-      fileName: "fileName3",
-      imgUrl: "/testImg.jpg",
-    },
-    {
-      fileId: 4,
-      fileName: "fileName",
-      imgUrl: "/testImg.jpg",
-    },
-    {
-      fileId: 5,
-      fileName: "fileName",
-      imgUrl: "/testImg.jpg",
-    },
-  ]);
+export default function MainPage() {
   const [page, setPage] = useState(0);
+  const [sortKey, setSortKey] = useState("date");
+  const [sortOrder, setSortOrder] = useState("desc");
+  const [images, setImages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [file, setFile] = useState({
-    fileId: "fileId",
-    comments: [
-      { userId: "userId", comment: "comment" },
-      { userId: "userId", comment: "comment" },
-    ],
-    context: "context",
-    name: "name.jpg",
-    size: "number",
-    createdAt: "date",
-    updatedAt: "date",
-    aiType: "stirng",
-    fileUrl: "/testImg.jpg",
-    imgUrl: "/testImg.jpg",
-  });
+  const [file, setFile] = useState({});
   const [isButtonBlinking, setIsButtonBlinking] = useState(false);
   const [isGameModalOpen, setIsGameModalOpen] = useState(false);
   const [user, setUser] = useState({
     email: "email@gmail.com",
-    userName: "userName",
+    userId: "",
   });
   const [contextMenu, setContextMenu] = useState({
     visible: false,
@@ -141,24 +109,37 @@ export default function TrashPage() {
     fileId: null,
     fileName: null,
   });
+  const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
+  const [initialLoad, setInitialLoad] = useState(true);
 
   const observer = useRef(null);
   const lastImageRef = useRef(null);
   const isLastPage = useRef(false);
 
-  const loadMoreImages = useCallback(async () => {
-    if (!isLastPage.current) {
-      setIsLoading(true);
-      const newImages = await fetchImages(page);
-      if (newImages.length === 0) {
-        isLastPage.current = true;
-      } else {
-        setImages((prevImages) => [...prevImages, ...newImages]);
-        setPage((prevPage) => prevPage + 1);
+  useEffect(() => {
+    const loadUserInfo = async () => {
+      const userInfo = await fetchUserInfo();
+      if (userInfo) {
+        setUser(userInfo);
       }
-      setIsLoading(false);
+    };
+    loadUserInfo();
+  }, []);
+
+  const loadMoreImages = useCallback(async () => {
+    console.log("loadMoreImages");
+    if (isLastPage.current) {
+      return;
     }
-  }, [page]);
+    setIsLoading(true);
+    const newImages = await fetchImages(user.userId, page, sortKey, sortOrder);
+    if (newImages.length === 0) {
+      isLastPage.current = true;
+    } else {
+      setImages((prevImages) => [...prevImages, ...newImages]);
+    }
+    setIsLoading(false);
+  }, [user, page, sortKey, sortOrder]);
 
   useEffect(() => {
     if (!observer.current) {
@@ -174,21 +155,36 @@ export default function TrashPage() {
     if (lastImageRef.current) {
       observer.current.observe(lastImageRef.current);
     }
+    return () => {
+      if (lastImageRef.current) {
+        observer.current.unobserve(lastImageRef.current);
+      }
+    };
   }, [lastImageRef.current]);
 
   useEffect(() => {
     loadMoreImages();
+    setInitialLoad(false); // 초기 로딩 후 상태 변경
+  }, []);
+
+  useEffect(() => {
+    if (initialLoad) {
+      return; // 초기 로딩 시에는 페이지 변경을 무시합니다.
+    }
+    loadMoreImages();
   }, [page]);
 
-  const openGameModal = () => {
-    setIsGameModalOpen(true);
-    setIsButtonBlinking(false);
-  };
+  useEffect(() => {
+    if (initialLoad) {
+      return; // 초기 로딩 시에는 페이지 변경을 무시합니다.
+    }
+    setPage(0);
+    setImages([]);
+    isLastPage.current = false;
+    loadMoreImages();
+  }, [sortKey, sortOrder]);
 
-  const closeGameModal = () => {
-    setIsGameModalOpen(false);
-  };
-
+  // 다른 부분을 클릭하면 컨텍스트가 닫힘
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (contextMenu.visible) {
@@ -206,8 +202,8 @@ export default function TrashPage() {
     event.preventDefault();
     setContextMenu({
       visible: true,
-      x: event.clientX,
-      y: event.clientY,
+      x: event.clientX + window.scrollX,
+      y: event.clientY + window.scrollY,
       fileId,
       fileName,
     });
@@ -241,6 +237,33 @@ export default function TrashPage() {
     setContextMenu({ visible: false, x: 0, y: 0, fileId: null });
   };
 
+  const handleSort = (sortKey) => {
+    setSortKey(sortKey);
+    setIsSortDropdownOpen(!isSortDropdownOpen);
+  };
+
+  const handleSortOrder = () => {
+    setSortOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"));
+  };
+
+  const toggleSortDropdown = () => {
+    setIsSortDropdownOpen(!isSortDropdownOpen);
+  };
+
+  // 드롭다운 외부 클릭 시 닫기
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isSortDropdownOpen && !event.target.closest(".sort-dropdown")) {
+        setIsSortDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [isSortDropdownOpen]);
+
   const handleDeleteAll = async () => {
     const response = await deleteAllFiles();
     if (response && response.status === 200) {
@@ -258,21 +281,23 @@ export default function TrashPage() {
             <span>유형</span>
             <AiFillCaretDown />
           </button>
-          <button
-            className={`game-button ${isButtonBlinking ? "blinking" : ""}`}
-            onClick={openGameModal}
-          >
-            Game
-          </button>
-          <button className="button-sort">
-            <span>정렬</span>
-            <AiFillCaretDown />
-          </button>
-          <button className="button-clear" onClick={handleDeleteAll}>
-            <span>휴지통 비우기</span>
-          </button>
+          <div className="sort-dropdown">
+            <button className="sort-order-button" onClick={handleSortOrder}>
+              {sortOrder === "asc" ? <AiFillCaretUp /> : <AiFillCaretDown />}
+            </button>
+            <button className="button-sort" onClick={toggleSortDropdown}>
+              <span>{sortKey === "name" ? "이름" : "최종 수정 날짜"}</span>
+              <AiFillCaretDown />
+            </button>
+            <button className="button-clear" onClick={handleDeleteAll}>
+              <span>휴지통 비우기</span>
+            </button>
+            <div className={`sort-options ${isSortDropdownOpen ? "show" : ""}`}>
+              <div onClick={() => handleSort("name")}>이름</div>
+              <div onClick={() => handleSort("date")}>최종 수정 날짜</div>
+            </div>
+          </div>
         </div>
-        {isGameModalOpen && <GameComponent onClose={closeGameModal} />}
         <div className="container">
           {images.map((image, index) => {
             if (index === images.length - 1) {
@@ -286,7 +311,7 @@ export default function TrashPage() {
                   }
                 >
                   <div>{image.fileName}</div>
-                  <img src={image.imgUrl} alt="이미지" />
+                  <img src={image.imageUrl} alt="이미지" />
                 </div>
               );
             } else {
@@ -299,7 +324,7 @@ export default function TrashPage() {
                   }
                 >
                   <div>{image.fileName}</div>
-                  <img src={image.imgUrl} alt="이미지" />
+                  <img src={image.imageUrl} alt="이미지" />
                 </div>
               );
             }
@@ -309,8 +334,8 @@ export default function TrashPage() {
         {contextMenu.visible && (
           <div
             className="context-menu"
-            style={{ top: contextMenu.y, left: contextMenu.x }}
-            onClick={closeContextMenu}
+            style={{ top: `${contextMenu.y}px`, left: `${contextMenu.x}px` }}
+            onClick={closeContextMenu} // 클릭 시 컨텍스트 메뉴 닫기
           >
             <div className="context-menu-item" onClick={handleRestore}>
               복원

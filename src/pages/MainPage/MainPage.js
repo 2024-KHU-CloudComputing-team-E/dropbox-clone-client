@@ -17,8 +17,8 @@ const fetchImages = async (userId, page, sortKey, sortOrder) => {
     const response = await axios.get(
       `${BASE_URL}/api/files?userId=${userId}&page=${page}&sortKey=${sortKey}&sortOrder=${sortOrder}`
     );
-    console.log(response.data.images);
-    return response.data.images;
+    console.log(response.data);
+    return response.data;
   } catch (error) {
     console.error("Failed to fetch images", error);
     return [];
@@ -29,7 +29,8 @@ const fetchImages = async (userId, page, sortKey, sortOrder) => {
 const fetchFile = async (fileId) => {
   console.log("fetchFile", fileId);
   try {
-    const response = await axios.get(`${BASE_URL}/api/${fileId}`);
+    const response = await axios.get(`${BASE_URL}/api/file/${fileId}`);
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("Failed to fetch files", error);
@@ -39,11 +40,10 @@ const fetchFile = async (fileId) => {
 
 // 유저 정보 요청
 const fetchUserInfo = async () => {
-  console.log("fetchUserInfo");
   try {
     const response = await axios.get(`${BASE_URL}/api/user/logined`);
+    console.log("fetchUserInfo", response.data);
     return response.data;
-    console.log(response.data);
   } catch (error) {
     console.error("Failed to fetch user info", error);
     return null;
@@ -69,7 +69,7 @@ const deleteFile = async (fileId) => {
   console.log("deleteFile", fileId);
   try {
     const response = await axios.post(
-      `${BASE_URL}/api/deleteFile/moveFileToRecycleBin?fileId=${fileId}`
+      `${BASE_URL}/api/deleteFile/moveFileToRecycleBin/${fileId}`
     );
     if (response.status === 200) {
       alert("파일이 휴지통으로 이동했습니다.");
@@ -85,76 +85,13 @@ const deleteFile = async (fileId) => {
 
 export default function MainPage() {
   const { userId } = useParams();
-  const [images, setImages] = useState([
-    //   {
-    //     fileId: 1,
-    //     fileName: "fileName1",
-    //     imgUrl: "/testImg.jpg",
-    //   },
-    //   {
-    //     fileId: 2,
-    //     fileName: "fileName2",
-    //     imgUrl: "/testImg.jpg",
-    //   },
-    //   {
-    //     fileId: 3,
-    //     fileName: "fileName3",
-    //     imgUrl: "/testImg.jpg",
-    //   },
-    //   {
-    //     fileId: 4,
-    //     fileName: "fileName",
-    //     imgUrl: "/testImg.jpg",
-    //   },
-    //   {
-    //     fileId: 5,
-    //     fileName: "fileName",
-    //     imgUrl: "/testImg.jpg",
-    //   },
-    //   {
-    //     fileId: 1,
-    //     fileName: "fileName1",
-    //     imgUrl: "/testImg.jpg",
-    //   },
-    //   {
-    //     fileId: 2,
-    //     fileName: "fileName2",
-    //     imgUrl: "/testImg.jpg",
-    //   },
-    //   {
-    //     fileId: 3,
-    //     fileName: "fileName3",
-    //     imgUrl: "/testImg.jpg",
-    //   },
-    //   {
-    //     fileId: 4,
-    //     fileName: "fileName",
-    //     imgUrl: "/testImg.jpg",
-    //   },
-    //   {
-    //     fileId: 5,
-    //     fileName: "fileName",
-    //     imgUrl: "/testImg.jpg",
-    //   },
-  ]);
   const [page, setPage] = useState(0);
+  const [sortKey, setSortKey] = useState("date");
+  const [sortOrder, setSortOrder] = useState("desc");
+  const [images, setImages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [file, setFile] = useState({
-    // fileId: "fileId",
-    // comments: [
-    //   { userId: "userId", comment: "comment" },
-    //   { userId: "userId", comment: "comment" },
-    // ],
-    // context: "context",
-    // name: "name.jpg",
-    // size: "number",
-    // createdAt: "date",
-    // updatedAt: "date",
-    // aiType: "stirng",
-    // fileUrl: "/testImg.jpg",
-    // imgUrl: "/testImg.jpg",
-  });
+  const [file, setFile] = useState({});
   const [isButtonBlinking, setIsButtonBlinking] = useState(false);
   const [isGameModalOpen, setIsGameModalOpen] = useState(false);
   const [user, setUser] = useState({
@@ -168,8 +105,6 @@ export default function MainPage() {
     fileId: null,
     fileName: null,
   });
-  const [sortKey, setSortKey] = useState("date");
-  const [sortOrder, setSortOrder] = useState("desc");
   const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
   const [initialLoad, setInitialLoad] = useState(true);
 
@@ -195,32 +130,22 @@ export default function MainPage() {
 
   const closeModal = () => {
     setIsModalOpen(false);
-    setFile([]);
+    setFile({});
   };
 
   const loadMoreImages = useCallback(async () => {
     console.log("loadMoreImages");
-    if (!isLastPage.current) {
-      setIsLoading(true);
-      const newImages = await fetchImages(userId, page, sortKey, sortOrder);
-      if (newImages.length === 0) {
-        isLastPage.current = true;
-      } else {
-        setImages((prevImages) => [...prevImages, ...newImages]);
-        setPage((prevPage) => prevPage + 1);
-      }
-      setIsLoading(false);
+    if (isLastPage.current) {
+      return;
     }
-
-    // setIsLoading(true);
-    // const newImages = await fetchImages(userId, page, sortKey, sortOrder);
-    // if (newImages.length === 0) {
-    //   isLastPage.current = true;
-    // } else {
-    //   setImages((prevImages) => [...prevImages, ...newImages]);
-    //   setPage((prevPage) => prevPage + 1);
-    // }
-    // setIsLoading(false);
+    setIsLoading(true);
+    const newImages = await fetchImages(userId, page, sortKey, sortOrder);
+    if (newImages.length === 0) {
+      isLastPage.current = true;
+    } else {
+      setImages((prevImages) => [...prevImages, ...newImages]);
+    }
+    setIsLoading(false);
   }, [userId, page, sortKey, sortOrder]);
 
   useEffect(() => {
@@ -242,7 +167,7 @@ export default function MainPage() {
         observer.current.unobserve(lastImageRef.current);
       }
     };
-  }, [lastImageRef]);
+  }, [lastImageRef.current]);
 
   useEffect(() => {
     loadMoreImages();
@@ -301,11 +226,10 @@ export default function MainPage() {
   };
 
   const handleDownload = async () => {
-    console.log("handleDownload", contextMenu.fileId);
     if (contextMenu.fileId) {
       const fileUrl = await downloadFile(contextMenu.fileId);
       const link = document.createElement("a");
-      link.href = `${process.env.REACT_APP_BASE_URL}${fileUrl}`;
+      link.href = fileUrl.fileUrl;
       link.download = contextMenu.fileName;
       document.body.appendChild(link);
 
@@ -402,11 +326,11 @@ export default function MainPage() {
                   className="item"
                   onClick={() => openModal(image.fileId)}
                   onContextMenu={(event) =>
-                    handleContextMenu(event, image.fileId)
+                    handleContextMenu(event, image.fileId, image.fileName)
                   }
                 >
                   <div>{image.fileName}</div>
-                  <img src={image.imgUrl} alt="이미지" />
+                  <img src={image.imageUrl} alt="이미지" />
                 </div>
               );
             } else {
@@ -420,7 +344,7 @@ export default function MainPage() {
                   }
                 >
                   <div>{image.fileName}</div>
-                  <img src={image.imgUrl} alt="이미지" />
+                  <img src={image.imageUrl} alt="이미지" />
                 </div>
               );
             }
