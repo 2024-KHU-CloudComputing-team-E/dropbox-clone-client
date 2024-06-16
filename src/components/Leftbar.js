@@ -22,6 +22,18 @@ const fetchUserInfo = async () => {
   }
 };
 
+// 특정 사용자 정보 요청
+const fetchSpecificUserInfo = async (userId) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/api/user/${userId}`);
+    console.log("fetchSpecificUserInfo", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch specific user info", error);
+    return null;
+  }
+};
+
 // 팔로우 요청
 const followUser = async (userId) => {
   try {
@@ -56,6 +68,7 @@ function Leftbar() {
   const [showFollowingModal, setShowFollowingModal] = useState(false);
   const [showFollowerModal, setShowFollowerModal] = useState(false);
   const [isFollow, setIsFollow] = useState(false);
+  const [anotherUser, setAnotherUser] = useState();
 
   const loadUserInfo = async () => {
     const userInfo = await fetchUserInfo();
@@ -70,6 +83,11 @@ function Leftbar() {
       );
       console.log("isFollowing", isFollowing);
       setIsFollow(isFollowing);
+    }
+    const anotherUserInfo = await fetchSpecificUserInfo(userId);
+    if (anotherUserInfo) {
+      setAnotherUser(anotherUserInfo);
+      console.log("anotherUserInfo", anotherUserInfo);
     }
   };
 
@@ -117,8 +135,17 @@ function Leftbar() {
       </div>
       {user && (
         <div className="user-info">
-          <div>{user.userName}</div>
-          <div>{user.email}</div>
+          {isOwner ? (
+            <>
+              <div>{user.userName}</div>
+              <div>{user.email}</div>
+            </>
+          ) : (
+            <>
+              <div>{anotherUser.userName}</div>
+              <div>{anotherUser.email}</div>
+            </>
+          )}
           {!isOwner &&
             (isFollow ? (
               <Button variant="outline-danger" onClick={handleUnfollow}>
@@ -214,7 +241,7 @@ function Leftbar() {
                   key={index}
                   onClick={() => handleRedirect(following.userId)}
                 >
-                  {following.userName} ({following.email})
+                  {following.userName}
                 </ListGroup.Item>
               ))}
           </ListGroup>
@@ -239,7 +266,7 @@ function Leftbar() {
                   key={index}
                   onClick={() => handleRedirect(follower.userId)}
                 >
-                  {follower.userName} ({follower.email})
+                  {follower.userName}
                 </ListGroup.Item>
               ))}
           </ListGroup>
