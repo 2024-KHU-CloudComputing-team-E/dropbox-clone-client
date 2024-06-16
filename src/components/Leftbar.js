@@ -15,7 +15,7 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
 const fetchUserInfo = async () => {
   try {
     const response = await axios.get(`${BASE_URL}/api/user/logined`);
-    return response;
+    return response.data;
   } catch (error) {
     console.error("Failed to fetch user info", error);
     return null;
