@@ -11,6 +11,7 @@
 
 .search-form {
   width: 40%; /* 서치바 너비 조정 */
+  position: relative; /* search-results 위치를 위해 relative 추가 */
 }
 
 .search-bar {
@@ -20,4 +21,28 @@
   font-size: 16px;
   border: 1px solid #e0e0e0;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.search-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 0 0 20px 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-height: 200px; /* 최대 높이 설정 */
+  overflow-y: auto; /* 스크롤 가능하도록 설정 */
+  z-index: 1000;
+}
+
+.search-result-item {
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.search-result-item:hover {
+  background-color: #f8f9fa;
 }
