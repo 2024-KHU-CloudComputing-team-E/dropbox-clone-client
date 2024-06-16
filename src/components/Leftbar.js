@@ -61,6 +61,7 @@ function Leftbar() {
     const userInfo = await fetchUserInfo();
     if (userInfo) {
       setUser(userInfo);
+      console.log("userInfo", userInfo);
       setFollowingCount(userInfo.followings.length);
       setFollowerCount(userInfo.followers.length);
       // 현재 사용자가 팔로우하는지 확인
