@@ -307,7 +307,6 @@ export default function MainPage() {
             </button>
             <button className="button-sort" onClick={toggleSortDropdown}>
               <span>{sortKey === "name" ? "이름" : "최종 수정 날짜"}</span>
-              <AiFillCaretDown />
             </button>
             <div className={`sort-options ${isSortDropdownOpen ? "show" : ""}`}>
               <div onClick={() => handleSort("name")}>이름</div>

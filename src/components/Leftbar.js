@@ -15,7 +15,7 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
 const fetchUserInfo = async () => {
   try {
     const response = await axios.get(`${BASE_URL}/api/user/logined`);
-    return response.data;
+    return response;
   } catch (error) {
     console.error("Failed to fetch user info", error);
     return null;
@@ -26,7 +26,8 @@ const fetchUserInfo = async () => {
 const followUser = async (userId) => {
   try {
     const response = await axios.post(`${BASE_URL}/api/ff/follow/${userId}`);
-    return response.data;
+    console.log(response.data);
+    return response;
   } catch (error) {
     console.error("Failed to follow user", error);
     return null;
@@ -37,6 +38,7 @@ const followUser = async (userId) => {
 const unfollowUser = async (userId) => {
   try {
     const response = await axios.post(`${BASE_URL}/api/ff/unfollow/${userId}`);
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("Failed to unfollow user", error);
@@ -65,6 +67,7 @@ function Leftbar() {
       const isFollowing = userInfo.followings.some(
         (following) => following.userId === userId
       );
+      console.log("isFollowing", isFollowing);
       setIsFollow(isFollowing);
     }
   };
