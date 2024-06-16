@@ -4,8 +4,8 @@ import axios from "axios";
 import Dropdown from "react-bootstrap/Dropdown";
 import ListGroup from "react-bootstrap/ListGroup";
 import ProgressBar from "react-bootstrap/ProgressBar";
-import Button from "react-bootstrap/Button"; // Button import 추가
-import Modal from "react-bootstrap/Modal"; // Modal import 추가
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Leftbar.css";
 
@@ -22,6 +22,28 @@ const fetchUserInfo = async () => {
   }
 };
 
+// 팔로우 요청
+const followUser = async (userId) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/api/ff/follow/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to follow user", error);
+    return null;
+  }
+};
+
+// 언팔로우 요청
+const unfollowUser = async (userId) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/api/ff/unfollow/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to unfollow user", error);
+    return null;
+  }
+};
+
 function Leftbar() {
   const location = useLocation();
   const { userId } = useParams();
@@ -31,6 +53,7 @@ function Leftbar() {
   const [followerCount, setFollowerCount] = useState(0);
   const [showFollowingModal, setShowFollowingModal] = useState(false);
   const [showFollowerModal, setShowFollowerModal] = useState(false);
+  const [isFollow, setIsFollow] = useState(false);
 
   const loadUserInfo = async () => {
     const userInfo = await fetchUserInfo();
@@ -38,12 +61,17 @@ function Leftbar() {
       setUser(userInfo);
       setFollowingCount(userInfo.followings.length);
       setFollowerCount(userInfo.followers.length);
+      // 현재 사용자가 팔로우하는지 확인
+      const isFollowing = userInfo.followings.some(
+        (following) => following.userId === userId
+      );
+      setIsFollow(isFollowing);
     }
   };
 
   useEffect(() => {
     loadUserInfo();
-  }, [location.key]); // location.key를 감시합니다.
+  }, [location.key]);
 
   const isOwner =
     user.userId &&
@@ -63,6 +91,20 @@ function Leftbar() {
     window.location.reload();
   };
 
+  const handleFollow = async () => {
+    const response = await followUser(userId);
+    if (response) {
+      loadUserInfo();
+    }
+  };
+
+  const handleUnfollow = async () => {
+    const response = await unfollowUser(userId);
+    if (response) {
+      loadUserInfo();
+    }
+  };
+
   return (
     <div className="leftbar">
       <div className="logo-container">
@@ -73,6 +115,16 @@ function Leftbar() {
         <div className="user-info">
           <div>{user.userName}</div>
           <div>{user.email}</div>
+          {!isOwner &&
+            (isFollow ? (
+              <Button variant="outline-danger" onClick={handleUnfollow}>
+                언팔로우
+              </Button>
+            ) : (
+              <Button variant="outline-primary" onClick={handleFollow}>
+                팔로우
+              </Button>
+            ))}
           <div className="follow-info">
             <Button
               variant="outline-primary"
