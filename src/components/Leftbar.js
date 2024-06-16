@@ -69,6 +69,8 @@ function Leftbar() {
   const [showFollowerModal, setShowFollowerModal] = useState(false);
   const [isFollow, setIsFollow] = useState(false);
   const [anotherUser, setAnotherUser] = useState({});
+  const [anotherFollowingCount, setAnotherFollowingCount] = useState(0);
+  const [anotherFollowerCount, setAnotherFollowerCount] = useState(0);
 
   const loadUserInfo = async () => {
     const userInfo = await fetchUserInfo();
@@ -88,6 +90,8 @@ function Leftbar() {
     if (anotherUserInfo) {
       setAnotherUser(anotherUserInfo);
       console.log("anotherUserInfo", anotherUserInfo);
+      setAnotherFollowerCount(anotherUserInfo.followers.length);
+      setAnotherFollowingCount(anotherUserInfo.followings.length);
     }
   };
 
@@ -133,21 +137,33 @@ function Leftbar() {
         <img src={"logo.png"} alt="logo" className="logo" />
         <h2>InstaBox</h2>
       </div>
-      {user && (
-        <div className="user-info">
-          {isOwner ? (
-            <>
-              <div>{user.userName}</div>
-              <div>{user.email}</div>
-            </>
-          ) : (
-            <>
-              <div>{anotherUser.userName}</div>
-              <div>{anotherUser.email}</div>
-            </>
-          )}
-          {!isOwner &&
-            (isFollow ? (
+      <div className="user-info">
+        {isOwner ? (
+          <>
+            <div>{user.userName}</div>
+            <div>{user.email}</div>
+            <div className="follow-info">
+              <Button
+                variant="outline-primary"
+                className="m-1"
+                onClick={handleShowFollowing}
+              >
+                팔로잉 {followingCount}
+              </Button>
+              <Button
+                variant="outline-primary"
+                className="m-1"
+                onClick={handleShowFollower}
+              >
+                팔로워 {followerCount}
+              </Button>
+            </div>
+          </>
+        ) : (
+          <>
+            <div>{anotherUser.userName}</div>
+            <div>{anotherUser.email}</div>
+            {isFollow ? (
               <Button variant="outline-danger" onClick={handleUnfollow}>
                 언팔로우
               </Button>
@@ -155,34 +171,35 @@ function Leftbar() {
               <Button variant="outline-primary" onClick={handleFollow}>
                 팔로우
               </Button>
-            ))}
-          <div className="follow-info">
+            )}
+            <div className="follow-info">
+              <Button
+                variant="outline-primary"
+                className="m-1"
+                onClick={handleShowFollowing}
+              >
+                팔로잉 {anotherFollowingCount}
+              </Button>
+              <Button
+                variant="outline-primary"
+                className="m-1"
+                onClick={handleShowFollower}
+              >
+                팔로워 {anotherFollowerCount}
+              </Button>
+            </div>
             <Button
-              variant="outline-primary"
+              as={Link}
+              to={`/${user.userId}`}
+              variant="outline-secondary"
               className="m-1"
-              onClick={handleShowFollowing}
+              onClick={() => handleRedirect(user.userId)}
             >
-              팔로잉 {followingCount}
+              내 저장소로 이동하기
             </Button>
-            <Button
-              variant="outline-primary"
-              className="m-1"
-              onClick={handleShowFollower}
-            >
-              팔로워 {followerCount}
-            </Button>
-          </div>
-          <Button
-            as={Link}
-            to={`/${user.userId}`}
-            variant="outline-secondary"
-            className="m-1"
-            onClick={() => handleRedirect(user.userId)}
-          >
-            내 저장소로 이동하기
-          </Button>
-        </div>
-      )}
+          </>
+        )}
+      </div>
       <ListGroup>
         <ListGroup.Item
           as={Link}
@@ -235,15 +252,16 @@ function Leftbar() {
         </Modal.Header>
         <Modal.Body>
           <ListGroup>
-            {user.followings &&
-              user.followings.map((following, index) => (
+            {(isOwner ? user.followings : anotherUser.followings)?.map(
+              (following, index) => (
                 <ListGroup.Item
                   key={index}
                   onClick={() => handleRedirect(following.userId)}
                 >
                   {following.userName}
                 </ListGroup.Item>
-              ))}
+              )
+            )}
           </ListGroup>
         </Modal.Body>
         <Modal.Footer>
@@ -260,15 +278,16 @@ function Leftbar() {
         </Modal.Header>
         <Modal.Body>
           <ListGroup>
-            {user.followers &&
-              user.followers.map((follower, index) => (
+            {(isOwner ? user.followers : anotherUser.followers)?.map(
+              (follower, index) => (
                 <ListGroup.Item
                   key={index}
                   onClick={() => handleRedirect(follower.userId)}
                 >
                   {follower.userName}
                 </ListGroup.Item>
-              ))}
+              )
+            )}
           </ListGroup>
         </Modal.Body>
         <Modal.Footer>
