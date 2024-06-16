@@ -68,7 +68,7 @@ function Leftbar() {
   const [showFollowingModal, setShowFollowingModal] = useState(false);
   const [showFollowerModal, setShowFollowerModal] = useState(false);
   const [isFollow, setIsFollow] = useState(false);
-  const [anotherUser, setAnotherUser] = useState();
+  const [anotherUser, setAnotherUser] = useState({});
 
   const loadUserInfo = async () => {
     const userInfo = await fetchUserInfo();
