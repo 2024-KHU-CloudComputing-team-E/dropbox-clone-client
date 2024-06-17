@@ -44,6 +44,8 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  background-color: #f8f9fa; /* 배경색을 어둡게 변경 */
+  color: #333; /* 텍스트 색상을 어둡게 변경 */
   overflow-y: auto;
 }
 
@@ -57,10 +59,17 @@
   flex: 1;
   overflow-y: auto;
   margin-top: 20px;
+  background-color: #fff; /* 댓글 영역 배경색 */
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .modal-right li {
-  margin-bottom: 25px;
+  margin-bottom: 15px;
+  padding: 5px;
+  background-color: #f1f1f1;
+  border-radius: 4px;
 }
 
 .comment-form {
@@ -75,6 +84,8 @@
   border: 1px solid #ccc;
   border-radius: 4px;
   margin-right: 10px;
+  background-color: #fff; /* 입력 필드 배경색 */
+  color: #333; /* 입력 필드 텍스트 색상 */
 }
 
 .comment-button {
