@@ -3,14 +3,15 @@
   top: 0;
   left: 0;
   height: 100%;
-  width: 300px;
-  background-color: #f8f9fa;
-  color: #333;
+  width: 250px; /* Leftbar 너비 조정 */
+  background-color: #2c3e50;
+  color: #ecf0f1;
   padding: 20px;
   overflow-y: auto;
   z-index: 1000;
-  border-right: 2px solid #e0e0e0;
   padding-top: 56px; /* 헤더 높이만큼 아래로 이동 */
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2); /* 그림자 효과 추가 */
+  border-right: 1px solid #34495e;
 }
 
 .logo-container {
@@ -20,49 +21,98 @@
 }
 
 .logo {
-  width: 65px; /* 로고 크기를 적절히 조절하세요 */
+  width: 50px; /* 로고 크기 조정 */
   height: auto;
   margin-right: 10px;
 }
 
 .leftbar h2 {
-  color: #ff6f61;
+  color: #ecf0f1;
   font-family: "Lobster", cursive;
-  margin: 0; /* h2 요소의 기본 마진 제거 */
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); /* 글씨를 두껍게 보이게 하는 그림자 효과 */
-  font-size: 40px;
+  margin: 0;
+  font-size: 30px;
 }
 
 .user-info {
   margin-bottom: 20px;
-  color: #333;
-  font-family: 'Comic Sans MS', cursive, sans-serif;
-  height: 150px;
+  color: #ecf0f1;
+  font-family: 'Arial', sans-serif;
+  text-align: center; /* 가운데 정렬 */
+}
+
+.user-info div {
+  margin-bottom: 10px;
+}
+
+.follow-info {
+  display: flex;
+  justify-content: center; /* 가운데 정렬 */
+  gap: 10px; /* 버튼 사이 간격 */
 }
 
 .leftbar .list-group-item {
-  background-color: #f8f9fa;
-  color: #333;
-  border: none;
+  background-color: #34495e;
+  color: #ecf0f1;
+  border: 1px solid #34495e;
   transition: background-color 0.3s, color 0.3s;
-  font-family: "Comic Sans MS", cursive, sans-serif;
-  border-radius: 10px;
+  font-family: "Arial", sans-serif;
+  border-radius: 5px;
   margin-bottom: 10px;
+  padding: 10px 15px; /* 내부 여백 추가 */
 }
 
 .leftbar .list-group-item:hover,
 .leftbar .list-group-item.active {
-  background-color: #ff6f61;
+  background-color: #1abc9c;
   color: #fff;
+  border-color: #1abc9c;
 }
 
 .leftbar .progress {
   height: 20px;
-  background-color: #e0e0e0;
+  width: 200px;
+  background-color: #34495e;
   border-radius: 10px;
+  margin-bottom: 20px;
 }
 
 .leftbar .progress-bar {
-  background-color: #ff6f61;
+  background-color: #1abc9c;
   border-radius: 10px;
+}
+
+/* 저장용량 부분 */
+.leftbar .storage-info {
+  text-align: center;
+  position: fixed;
+  bottom: 100px;
+
+}
+
+.modal-content {
+  background-color: #2c3e50;
+  color: #ecf0f1;
+}
+
+.modal-header {
+  border-bottom: 1px solid #34495e;
+}
+
+.modal-footer {
+  border-top: 1px solid #34495e;
+}
+
+.modal-title {
+  color: #1abc9c;
+}
+
+.modal-body .list-group-item {
+  background-color: #34495e;
+  color: #ecf0f1;
+  border: 1px solid #34495e;
+}
+
+.modal-body .list-group-item:hover {
+  background-color: #1abc9c;
+  color: #fff;
 }

@@ -11,12 +11,16 @@ import GameComponent from "../../components/game";
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 // 메인페이지 무한 스크롤 이미지 요청
-const fetchImages = async (userId, page, sortKey, sortOrder) => {
-  console.log("fetchImages", userId, page, sortKey, sortOrder);
+const fetchImages = async (userId, page, sortKey, sortOrder, filter) => {
+  console.log("fetchImages", userId, page, sortKey, sortOrder, filter);
   try {
-    const response = await axios.get(
-      `${BASE_URL}/api/files?userId=${userId}&page=${page}&sortKey=${sortKey}&sortOrder=${sortOrder}`
-    );
+    let params = { userId, page, sortKey, sortOrder };
+    if (filter !== "") {
+      params.filter = filter;
+    }
+    const response = await axios.get(`${BASE_URL}/api/files`, {
+      params: params,
+    });
     console.log(response.data);
     return response.data;
   } catch (error) {
@@ -78,7 +82,7 @@ const deleteFile = async (fileId) => {
     }
     return response;
   } catch (error) {
-    console.log("Faild to delete file", error);
+    console.log("Failed to delete file", error);
     return null;
   }
 };
@@ -107,6 +111,7 @@ export default function MainPage() {
   });
   const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
   const [initialLoad, setInitialLoad] = useState(true);
+  const [filter, setFilter] = useState(""); // filter 상태 추가
 
   const observer = useRef(null);
   const lastImageRef = useRef(null);
@@ -139,14 +144,20 @@ export default function MainPage() {
       return;
     }
     setIsLoading(true);
-    const newImages = await fetchImages(userId, page, sortKey, sortOrder);
+    const newImages = await fetchImages(
+      userId,
+      page,
+      sortKey,
+      sortOrder,
+      filter
+    );
     if (newImages.length === 0) {
       isLastPage.current = true;
     } else {
       setImages((prevImages) => [...prevImages, ...newImages]);
     }
     setIsLoading(false);
-  }, [userId, page, sortKey, sortOrder]);
+  }, [userId, page, sortKey, sortOrder, filter]);
 
   useEffect(() => {
     if (!observer.current) {
@@ -189,7 +200,7 @@ export default function MainPage() {
     setImages([]);
     isLastPage.current = false;
     loadMoreImages();
-  }, [sortKey, sortOrder]);
+  }, [sortKey, sortOrder, filter]); // filter 추가
 
   const openGameModal = () => {
     setIsGameModalOpen(true);
@@ -286,15 +297,11 @@ export default function MainPage() {
   }, [isSortDropdownOpen]);
 
   return (
-    <div>
-      <Header />
+    <div className="MainPage">
+      <Header setFilter={setFilter} /> {/* setFilter 전달 */}
       <Leftbar />
       <div className="layout">
         <div className="button-container">
-          <button className="button-type">
-            <span>유형</span>
-            <AiFillCaretDown />
-          </button>
           <button
             className={`game-button ${isButtonBlinking ? "blinking" : ""}`}
             onClick={openGameModal}
@@ -307,7 +314,6 @@ export default function MainPage() {
             </button>
             <button className="button-sort" onClick={toggleSortDropdown}>
               <span>{sortKey === "name" ? "이름" : "최종 수정 날짜"}</span>
-              <AiFillCaretDown />
             </button>
             <div className={`sort-options ${isSortDropdownOpen ? "show" : ""}`}>
               <div onClick={() => handleSort("name")}>이름</div>

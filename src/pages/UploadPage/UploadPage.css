@@ -4,7 +4,9 @@
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background-color: #f9f9f9;
+  background: linear-gradient(to right, #5b778e, #75a2cf)!important;
+  padding: 100px 50px 20px 290px; /* Adjust padding for layout */
+
 }
 
 .preview {
@@ -12,8 +14,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 60%;
-  height: 300px;
+  width: 700px;
+  height: 423px;
   border: 2px dashed #ccc;
   border-radius: 10px;
   background-color: #fff;

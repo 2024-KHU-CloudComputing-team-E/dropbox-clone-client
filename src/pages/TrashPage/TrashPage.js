@@ -125,6 +125,7 @@ export default function MainPage() {
 
   const loadMoreImages = useCallback(async () => {
     console.log("loadMoreImages");
+    if (!user.userId) return;
     if (isLastPage.current) {
       return;
     }
@@ -162,12 +163,13 @@ export default function MainPage() {
   useEffect(() => {
     loadMoreImages();
     setInitialLoad(false); // 초기 로딩 후 상태 변경
-  }, [user.userId]);
+  }, [user]);
 
   useEffect(() => {
     if (initialLoad) {
       return; // 초기 로딩 시에는 페이지 변경을 무시합니다.
     }
+
     loadMoreImages();
   }, [page]);
 
@@ -175,6 +177,7 @@ export default function MainPage() {
     if (initialLoad) {
       return; // 초기 로딩 시에는 페이지 변경을 무시합니다.
     }
+
     setPage(0);
     setImages([]);
     isLastPage.current = false;
@@ -274,10 +277,6 @@ export default function MainPage() {
       <Leftbar />
       <div className="layout">
         <div className="button-container">
-          <button className="button-type">
-            <span>유형</span>
-            <AiFillCaretDown />
-          </button>
           <div className="sort-dropdown">
             <button className="sort-order-button" onClick={handleSortOrder}>
               {sortOrder === "asc" ? <AiFillCaretUp /> : <AiFillCaretDown />}
