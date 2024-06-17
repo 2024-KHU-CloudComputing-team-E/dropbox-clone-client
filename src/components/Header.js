@@ -11,9 +11,7 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 function Header() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState([
-    { userId: "114945935223681152221", userName: "홍승표" },
-  ]);
+  const [searchResults, setSearchResults] = useState([]);
   const [debounceTimeout, setDebounceTimeout] = useState(null);
   const navigate = useNavigate();
 
@@ -48,6 +46,7 @@ function Header() {
 
   const handleResultClick = (userId) => {
     navigate(`/${userId}`);
+    window.location.reload();
   };
 
   return (
