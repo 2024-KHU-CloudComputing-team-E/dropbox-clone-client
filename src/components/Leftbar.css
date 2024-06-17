@@ -70,6 +70,7 @@
 
 .leftbar .progress {
   height: 20px;
+  width: 200px;
   background-color: #34495e;
   border-radius: 10px;
   margin-bottom: 20px;
@@ -78,6 +79,14 @@
 .leftbar .progress-bar {
   background-color: #1abc9c;
   border-radius: 10px;
+}
+
+/* 저장용량 부분 */
+.leftbar .storage-info {
+  text-align: center;
+  position: fixed;
+  bottom: 100px;
+
 }
 
 .modal-content {

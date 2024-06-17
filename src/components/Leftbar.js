@@ -242,8 +242,8 @@ function Leftbar() {
       {isOwner && (
         <div className="storage-info">
           <h5>저장용량</h5>
-          10GB 중 {user.volume}GB 사용
-          <ProgressBar now={(user.volume / 10) * 100} />
+          10GB 중 {user.volume.toFixed(2)}GB 사용
+          <ProgressBar now={(user.volume.toFixed(2) / 10) * 100} />
         </div>
       )}
 
