@@ -37,6 +37,7 @@ const UploadBox = () => {
     setActive(false);
     const file = e.dataTransfer.files[0];
     setFileInfo(file);
+    setFile(file);
   };
 
   const handleUpload = ({ target }) => {
