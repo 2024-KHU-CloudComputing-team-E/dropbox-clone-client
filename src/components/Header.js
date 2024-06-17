@@ -17,8 +17,11 @@ function Header() {
   const fetchSearchResults = async (term) => {
     try {
       const response = await axios.get(`${BASE_URL}/api/search/${term}`);
-      console.log(response.data);
-      setSearchResults("fetchSearchResults", response.data);
+      console.log("fetchSearchResults ---- ", term, "----", response.data);
+      if (Array.isArray(response.data)) {
+        console.log("array ok");
+      }
+      setSearchResults(response.data);
     } catch (error) {
       console.error("Failed to fetch search results", error);
     }
@@ -55,7 +58,7 @@ function Header() {
               <div className="search-results">
                 {searchResults.map((result, index) => (
                   <div key={index} className="search-result-item">
-                    {result}
+                    {result.userName}
                   </div>
                 ))}
               </div>
