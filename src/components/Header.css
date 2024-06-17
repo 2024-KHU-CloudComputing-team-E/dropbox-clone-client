@@ -10,9 +10,11 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
+
 .search-form {
   width: 40%; /* 서치바 너비 조정 */
   position: relative; /* search-results 위치를 위해 relative 추가 */
+  margin-right: 20px; /* 필터 버튼과의 간격 조정 */
 }
 
 .search-bar {
@@ -54,4 +56,14 @@
 .search-result-item:hover {
   background-color: #1abc9c; /* 호버 시 배경색 */
   color: #fff; /* 호버 시 텍스트 색상 */
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.filter-button.active {
+  background-color: #1abc9c;
+  color: white;
 }

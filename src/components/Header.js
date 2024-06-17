@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Navbar from "react-bootstrap/Navbar";
+import Button from "react-bootstrap/Button";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Header.css";
@@ -9,13 +10,13 @@ import { useNavigate } from "react-router-dom";
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
-function Header() {
+function Header({ setFilter }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [debounceTimeout, setDebounceTimeout] = useState(null);
+  const [activeFilter, setActiveFilter] = useState("");
   const navigate = useNavigate();
 
-  // 유저 검색 요청
   const fetchSearchResults = async (term) => {
     try {
       const response = await axios.get(`${BASE_URL}/api/search/${term}`);
@@ -49,10 +50,16 @@ function Header() {
     window.location.reload();
   };
 
+  const handleFilterClick = (filter) => {
+    const newFilter = activeFilter === filter ? "" : filter;
+    setActiveFilter(newFilter);
+    setFilter(newFilter);
+  };
+
   return (
     <>
       <Navbar className="header-navbar" bg="light" variant="light">
-        <Container>
+        <Container className="d-flex align-items-center justify-content-start">
           <Form className="d-flex search-form">
             <Form.Control
               type="search"
@@ -76,6 +83,20 @@ function Header() {
               </div>
             )}
           </Form>
+          <div className="filter-buttons">
+            {["인물", "자동차", "풍경", "동물", "기타"].map((filter, index) => (
+              <Button
+                key={index}
+                variant="outline-primary"
+                className={`filter-button ${
+                  activeFilter === filter ? "active" : ""
+                }`}
+                onClick={() => handleFilterClick(filter)}
+              >
+                {filter}
+              </Button>
+            ))}
+          </div>
         </Container>
       </Navbar>
     </>
