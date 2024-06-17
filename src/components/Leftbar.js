@@ -239,11 +239,13 @@ function Leftbar() {
           </>
         )}
       </ListGroup>
-      <div className="storage-info">
-        <h5>저장용량</h5>
-        100GB 중 18GB 사용
-        <ProgressBar now={18} />
-      </div>
+      {isOwner && (
+        <div className="storage-info">
+          <h5>저장용량</h5>
+          10GB 중 {user.volume} 사용
+          <ProgressBar now={(user.volume / 10) * 100} />
+        </div>
+      )}
 
       {/* 팔로잉 목록 모달 */}
       <Modal show={showFollowingModal} onHide={handleCloseFollowing}>
