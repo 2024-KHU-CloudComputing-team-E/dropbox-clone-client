@@ -98,10 +98,7 @@ export default function MainPage() {
   const [file, setFile] = useState({});
   const [isButtonBlinking, setIsButtonBlinking] = useState(false);
   const [isGameModalOpen, setIsGameModalOpen] = useState(false);
-  const [user, setUser] = useState({
-    email: "email@gmail.com",
-    userName: "userName",
-  });
+  const [user, setUser] = useState({});
   const [contextMenu, setContextMenu] = useState({
     visible: false,
     x: 0,
