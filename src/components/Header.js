@@ -13,6 +13,17 @@ function Header() {
   const [searchResults, setSearchResults] = useState([]);
   const [debounceTimeout, setDebounceTimeout] = useState(null);
 
+  // 유저 검색 요청
+  const fetchSearchResults = async (term) => {
+    try {
+      const response = await axios.get(`${BASE_URL}/api/search/${term}`);
+      console.log(response.data);
+      setSearchResults("fetchSearchResults", response.data);
+    } catch (error) {
+      console.error("Failed to fetch search results", error);
+    }
+  };
+
   useEffect(() => {
     if (searchTerm) {
       if (debounceTimeout) {
@@ -26,15 +37,6 @@ function Header() {
       setSearchResults([]);
     }
   }, [searchTerm]);
-
-  const fetchSearchResults = async (term) => {
-    try {
-      const response = await axios.get(`${BASE_URL}/api/search/${term}`);
-      setSearchResults(response.data);
-    } catch (error) {
-      console.error("Failed to fetch search results", error);
-    }
-  };
 
   return (
     <>
