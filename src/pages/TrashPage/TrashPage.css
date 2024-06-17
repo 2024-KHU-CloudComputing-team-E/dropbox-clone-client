@@ -3,20 +3,24 @@
   position: relative; 
 }
 
-.button-container {
-  display: flex;
-  justify-content: space-between;
-  font-size: 20px;
-  margin-bottom: 50px;
-}
-
-.button-type, .button-sort, .game-button {
-  border-radius: 12px;
+.button-sort, .game-button, .sort-order-button {
+  border-radius: 8px;
   padding: 10px 20px;
   font-size: 16px;
   border: none;
   cursor: pointer;
-  transition: background-color 0.3s;
+  background-color: #fff;
+  color: #333;
+  transition: background-color 0.3s, box-shadow 0.3s;  
+}
+
+.game-button {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.sort-dropdown {
+  margin-left: auto;
 }
 
 .button-type:hover, .button-sort:hover, .game-button:hover {

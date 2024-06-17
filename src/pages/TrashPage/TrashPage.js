@@ -277,10 +277,6 @@ export default function MainPage() {
       <Leftbar />
       <div className="layout">
         <div className="button-container">
-          <button className="button-type">
-            <span>유형</span>
-            <AiFillCaretDown />
-          </button>
           <div className="sort-dropdown">
             <button className="sort-order-button" onClick={handleSortOrder}>
               {sortOrder === "asc" ? <AiFillCaretUp /> : <AiFillCaretDown />}

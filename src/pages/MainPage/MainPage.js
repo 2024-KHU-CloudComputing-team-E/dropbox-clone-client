@@ -286,15 +286,11 @@ export default function MainPage() {
   }, [isSortDropdownOpen]);
 
   return (
-    <div>
+    <div className="MainPage">
       <Header />
       <Leftbar />
       <div className="layout">
         <div className="button-container">
-          <button className="button-type">
-            <span>유형</span>
-            <AiFillCaretDown />
-          </button>
           <button
             className={`game-button ${isButtonBlinking ? "blinking" : ""}`}
             onClick={openGameModal}

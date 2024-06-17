@@ -239,11 +239,11 @@ function Leftbar() {
           </>
         )}
       </ListGroup>
-      <Dropdown.Item>
+      <div className="storage-info">
         <h5>저장용량</h5>
         100GB 중 18GB 사용
         <ProgressBar now={18} />
-      </Dropdown.Item>
+      </div>
 
       {/* 팔로잉 목록 모달 */}
       <Modal show={showFollowingModal} onHide={handleCloseFollowing}>
