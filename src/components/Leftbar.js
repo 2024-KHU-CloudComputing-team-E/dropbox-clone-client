@@ -222,13 +222,7 @@ function Leftbar() {
             >
               업로드
             </ListGroup.Item>
-            <ListGroup.Item
-              as={Link}
-              to="/favorites"
-              active={location.pathname === "/favorites"}
-            >
-              즐겨찾기
-            </ListGroup.Item>
+
             <ListGroup.Item
               as={Link}
               to="/trash"
