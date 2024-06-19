@@ -84,7 +84,7 @@ function Header({ setFilter }) {
             )}
           </Form>
           <div className="filter-buttons">
-            {["인물", "자동차", "풍경", "동물", "기타"].map((filter, index) => (
+            {["인물", "풍경", "동물", "음식", "자동차"].map((filter, index) => (
               <Button
                 key={index}
                 variant="outline-primary"
