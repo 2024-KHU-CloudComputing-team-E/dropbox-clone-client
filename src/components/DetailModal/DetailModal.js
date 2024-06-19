@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "./DetailModal.css";
 
 const DetailModal = ({ isOpen, onClose, file, setIsButtonBlinking, user }) => {
