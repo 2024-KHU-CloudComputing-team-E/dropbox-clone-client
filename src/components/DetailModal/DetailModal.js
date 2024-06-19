@@ -52,6 +52,53 @@ const DetailModal = ({ isOpen, onClose, file, setIsButtonBlinking, user }) => {
     }
   };
 
+  const renderFileContent = (file) => {
+    if (file.type.startsWith("image/")) {
+      return <img alt="Modal Thumbnail" src={file.url} />;
+    } else if (file.type.startsWith("video/")) {
+      return (
+        <video controls>
+          <source src={file.url} type={file.type} />
+          Your browser does not support the video tag.
+        </video>
+      );
+    } else if (file.type === "application/pdf") {
+      return (
+        <embed
+          src={file.url}
+          type="application/pdf"
+          width="100%"
+          height="600px"
+        />
+      );
+    } else if (
+      file.type === "application/vnd.ms-powerpoint" ||
+      file.type ===
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+    ) {
+      return (
+        <iframe
+          src={`https://view.officeapps.live.com/op/embed.aspx?src=${file.url}`}
+          width="100%"
+          height="600px"
+          frameBorder="0"
+        >
+          This is an embedded{" "}
+          <a target="_blank" href="http://office.com">
+            Microsoft Office
+          </a>{" "}
+          document, powered by{" "}
+          <a target="_blank" href="http://office.com/webapps">
+            Office Online
+          </a>
+          .
+        </iframe>
+      );
+    } else {
+      return <div>파일 미리보기를 지원하지 않는 파일 형식입니다.</div>;
+    }
+  };
+
   if (!isOpen || !file) return null;
 
   return (
@@ -60,9 +107,7 @@ const DetailModal = ({ isOpen, onClose, file, setIsButtonBlinking, user }) => {
         Download
       </button>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-left">
-          <img src={file.url} alt="Modal Thumbnail" />
-        </div>
+        <div className="modal-left">{renderFileContent(file)}</div>
         <div className="modal-right">
           <ul>
             {comments.length > 0 ? (
