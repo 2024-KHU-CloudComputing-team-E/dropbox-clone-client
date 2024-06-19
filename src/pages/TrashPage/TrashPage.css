@@ -27,8 +27,9 @@ a {
 }
 
 .TrashPage .button-sort, 
-.TrashPage .button-clear, 
-.TrashPage .sort-order-button {
+.TrashPage .game-button, 
+.TrashPage .sort-order-button
+ {
   border-radius: 8px;
   padding: 10px 20px;
   font-size: 16px;
@@ -39,13 +40,27 @@ a {
   transition: background-color 0.3s, box-shadow 0.3s;  
 }
 
+.TrashPage .button-clear {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  background-color: #ff2a2a;
+  color: #ecf0f1;
+  transition: background-color 0.3s, box-shadow 0.3s;  
+}
+
 .TrashPage .sort-dropdown {
   margin-left: auto;
 }
 
 .TrashPage .button-type:hover, 
 .TrashPage .button-sort:hover, 
-.TrashPage .button-clear:hover, 
+.TrashPage .game-button:hover, 
 .TrashPage .sort-order-button:hover {
   background-color: #16a085;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -94,6 +109,16 @@ a {
 .TrashPage .item img:hover {
   transform: scale(1.05);
   opacity: 0.85;
+}
+
+.TrashPage .game-button.blinking {
+  animation: blink-animation 1s steps(5, start) infinite;
+}
+
+@keyframes blink-animation {
+  to {
+    visibility: hidden;
+  }
 }
 
 .TrashPage .context-menu {
@@ -164,108 +189,4 @@ a {
 .TrashPage .sort-options div:hover {
   background-color: #1abc9c;
   color: #fff;
-}
-
-.layout {
-  padding: 100px 50px 20px 300px; /* 상단, 우측, 하단, 좌측 여백을 설정하여 겹침 방지 */
-  position: relative; 
-}
-
-.button-sort, .button-clear, .sort-order-button {
-  border-radius: 8px;
-  padding: 10px 20px;
-  font-size: 16px;
-  border: none;
-  cursor: pointer;
-  background-color: #fff;
-  color: #333;
-  transition: background-color 0.3s, box-shadow 0.3s;  
-}
-
-.sort-dropdown {
-  margin-left: auto;
-}
-
-.button-type:hover, .button-sort:hover, .button-clear:hover {
-  background-color: #f0f0f0;
-}
-
-.container::-webkit-scrollbar {
-  height: 10px;
-}
-
-.container::-webkit-scrollbar-thumb {
-  background-color: #2f3542;
-  border-radius: 10px;
-}
-
-.container::-webkit-scrollbar-track {
-  background-color: grey;
-  border-radius: 10px;
-  box-shadow: inset 0px 0px 5px white;
-}
-
-.container {
-  display: grid;
-  grid-gap: 60px;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-}
-
-.item {
-  border: solid #ccc 1px;
-  border-radius: 20px;
-  background-color: #fff;
-  padding: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.item:hover {
-  transform: scale(1.05);
-  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
-}
-
-.item div {
-  margin-bottom: 10px;
-  margin-left: 10px;
-}
-
-.item img {
-  width: 100%;
-  border-radius: 10px;
-  transition: transform 0.3s, opacity 0.3s;
-}
-
-.item img:hover {
-  transform: scale(1.1);
-  opacity: 0.9;
-}
-
-.context-menu {
-  position: absolute;
-  background-color: white;
-  border: 1px solid #ccc;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
-  z-index: 1000;
-  width: 150px;
-  opacity: 0;
-  animation: fadeIn 0.3s forwards;
-}
-
-.context-menu-item {
-  padding: 10px;
-  cursor: pointer;
-}
-
-.context-menu-item:hover {
-  background-color: #f0f0f0;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
 }

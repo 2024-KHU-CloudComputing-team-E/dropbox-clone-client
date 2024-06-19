@@ -46,7 +46,6 @@ const DetailModal = ({ isOpen, onClose, file, setIsButtonBlinking, user }) => {
           comment: newComment,
         }
       );
-      // 유저 정보 받아와서 setComments 하는 부분 필요
       console.log("Comment posted:", response.data);
     } catch (error) {
       console.error("Error posting comment:", error);

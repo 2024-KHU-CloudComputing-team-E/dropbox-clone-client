@@ -17,13 +17,14 @@ const UploadBox = () => {
   const [isActive, setActive] = useState(false);
   const [uploadedInfo, setUploadedInfo] = useState(null);
   const [file, setFile] = useState(null);
+  const [isLoading, setIsLoading] = useState(false); // 로딩 상태 추가
 
   // 테스트 코드
   useEffect(() => {
-    if (uploadedInfo) {
-      console.log(uploadedInfo);
+    if (file) {
+      console.log("file", file);
     }
-  }, [uploadedInfo]);
+  }, [file]);
 
   const handleDragStart = () => setActive(true);
   const handleDragEnd = () => setActive(false);
@@ -89,7 +90,7 @@ const UploadBox = () => {
       alert("파일을 선택해주세요.");
       return;
     }
-
+    setIsLoading(true); // 로딩 상태 시작
     const formData = new FormData();
     formData.append("file", file);
 
@@ -105,6 +106,9 @@ const UploadBox = () => {
       .catch((err) => {
         console.error("Error during file upload: ", err);
         alert("파일 업로드 중 오류가 발생했습니다.");
+      })
+      .finally(() => {
+        setIsLoading(false); // 로딩 상태 종료
       });
   };
 
@@ -126,9 +130,19 @@ const UploadBox = () => {
           </>
         )}
       </label>
-      <button className="uploadButton" onClick={handleFileUpload}>
-        업로드
+      <button
+        className="uploadButton"
+        onClick={handleFileUpload}
+        disabled={isLoading}
+      >
+        {isLoading ? "업로드 중..." : "업로드"}
       </button>
+      {isLoading && (
+        <div className="loadingSpinner">
+          <div className="spinner"></div>
+          업로드 중입니다. 잠시만 기다려 주세요.
+        </div>
+      )}
     </div>
   );
 };

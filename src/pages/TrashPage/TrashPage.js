@@ -4,7 +4,6 @@ import axios from "axios";
 import Header from "../../components/Header";
 import Leftbar from "../../components/Leftbar";
 import { AiFillCaretDown, AiFillCaretUp } from "react-icons/ai";
-import { useParams } from "react-router-dom";
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -25,10 +24,9 @@ const fetchImages = async (userId, page, sortKey, sortOrder) => {
 
 // 유저 정보 요청
 const fetchUserInfo = async () => {
-  console.log("fetchUserInfo");
   try {
     const response = await axios.get(`${BASE_URL}/api/user/logined`);
-    console.log(response.data);
+    console.log("fetchUserInfo", response.data);
     return response.data;
   } catch (error) {
     console.error("Failed to fetch user info", error);
@@ -88,16 +86,12 @@ const deleteAllFiles = async () => {
   }
 };
 
-export default function MainPage() {
+export default function TrashPage() {
   const [page, setPage] = useState(0);
   const [sortKey, setSortKey] = useState("date");
   const [sortOrder, setSortOrder] = useState("desc");
   const [images, setImages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [file, setFile] = useState({});
-  const [isButtonBlinking, setIsButtonBlinking] = useState(false);
-  const [isGameModalOpen, setIsGameModalOpen] = useState(false);
   const [user, setUser] = useState({});
   const [contextMenu, setContextMenu] = useState({
     visible: false,
@@ -163,13 +157,12 @@ export default function MainPage() {
   useEffect(() => {
     loadMoreImages();
     setInitialLoad(false); // 초기 로딩 후 상태 변경
-  }, [user]);
+  }, []);
 
   useEffect(() => {
     if (initialLoad) {
       return; // 초기 로딩 시에는 페이지 변경을 무시합니다.
     }
-
     loadMoreImages();
   }, [page]);
 
@@ -177,7 +170,6 @@ export default function MainPage() {
     if (initialLoad) {
       return; // 초기 로딩 시에는 페이지 변경을 무시합니다.
     }
-
     setPage(0);
     setImages([]);
     isLastPage.current = false;
@@ -207,30 +199,6 @@ export default function MainPage() {
       fileId,
       fileName,
     });
-  };
-
-  const handleDelete = async () => {
-    if (contextMenu.fileId) {
-      const response = await deleteFilePermanently(contextMenu.fileId);
-      if (response && response.status === 200) {
-        setImages((prevImages) =>
-          prevImages.filter((image) => image.fileId !== contextMenu.fileId)
-        );
-      }
-    }
-    setContextMenu({ visible: false, x: 0, y: 0, fileId: null });
-  };
-
-  const handleRestore = async () => {
-    if (contextMenu.fileId) {
-      const response = await restoreFile(contextMenu.fileId);
-      if (response && response.status === 200) {
-        setImages((prevImages) =>
-          prevImages.filter((image) => image.fileId !== contextMenu.fileId)
-        );
-      }
-    }
-    setContextMenu({ visible: false, x: 0, y: 0, fileId: null });
   };
 
   const closeContextMenu = () => {
@@ -264,6 +232,30 @@ export default function MainPage() {
     };
   }, [isSortDropdownOpen]);
 
+  const handleDelete = async () => {
+    if (contextMenu.fileId) {
+      const response = await deleteFilePermanently(contextMenu.fileId);
+      if (response && response.status === 200) {
+        setImages((prevImages) =>
+          prevImages.filter((image) => image.fileId !== contextMenu.fileId)
+        );
+      }
+    }
+    setContextMenu({ visible: false, x: 0, y: 0, fileId: null });
+  };
+
+  const handleRestore = async () => {
+    if (contextMenu.fileId) {
+      const response = await restoreFile(contextMenu.fileId);
+      if (response && response.status === 200) {
+        setImages((prevImages) =>
+          prevImages.filter((image) => image.fileId !== contextMenu.fileId)
+        );
+      }
+    }
+    setContextMenu({ visible: false, x: 0, y: 0, fileId: null });
+  };
+
   const handleDeleteAll = async () => {
     const response = await deleteAllFiles();
     if (response && response.status === 200) {
@@ -272,11 +264,14 @@ export default function MainPage() {
   };
 
   return (
-    <div>
+    <div className="TrashPage">
       <Header />
       <Leftbar />
       <div className="layout">
         <div className="button-container">
+          <button className="button-clear" onClick={handleDeleteAll}>
+            <span>휴지통 비우기</span>
+          </button>
           <div className="sort-dropdown">
             <button className="sort-order-button" onClick={handleSortOrder}>
               {sortOrder === "asc" ? <AiFillCaretUp /> : <AiFillCaretDown />}
@@ -284,9 +279,6 @@ export default function MainPage() {
             <button className="button-sort" onClick={toggleSortDropdown}>
               <span>{sortKey === "name" ? "이름" : "최종 수정 날짜"}</span>
               <AiFillCaretDown />
-            </button>
-            <button className="button-clear" onClick={handleDeleteAll}>
-              <span>휴지통 비우기</span>
             </button>
             <div className={`sort-options ${isSortDropdownOpen ? "show" : ""}`}>
               <div onClick={() => handleSort("name")}>이름</div>
