@@ -94,7 +94,7 @@ export default function MainPage() {
   const [page, setPage] = useState(0);
   const [sortKey, setSortKey] = useState("date");
   const [sortOrder, setSortOrder] = useState("desc");
-  const [images, setImages] = useState();
+  const [images, setImages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [file, setFile] = useState({});
