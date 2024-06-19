@@ -37,9 +37,11 @@ const fetchUserInfo = async () => {
 // 파일 영구 삭제 요청
 const deleteFilePermanently = async (fileId) => {
   try {
+    console.log("deleteFilePermanently", fileId);
     const response = await axios.post(
       `${BASE_URL}/api/deleteFile/deleteFileOnRecycleBin/${fileId}`
     );
+    console.log(response);
     if (response.status === 200) {
       alert("파일이 영구적으로 삭제되었습니다.");
     } else {
@@ -55,9 +57,11 @@ const deleteFilePermanently = async (fileId) => {
 // 파일 복원 요청
 const restoreFile = async (fileId) => {
   try {
+    console.log("restoreFile", fileId);
     const response = await axios.post(
       `${BASE_URL}/api/deleteFile/restore/${fileId}`
     );
+    console.log(response);
     if (response.status === 200) {
       alert("파일이 복원되었습니다.");
     } else {
@@ -73,7 +77,9 @@ const restoreFile = async (fileId) => {
 // 휴지통 비우기 요청
 const deleteAllFiles = async () => {
   try {
+    console.log("deleteAllFiles");
     const response = await axios.post(`${BASE_URL}/api/deleteFile/deleteAll`);
+    console.log(response);
     if (response.status === 200) {
       alert("휴지통이 비워졌습니다.");
     } else {

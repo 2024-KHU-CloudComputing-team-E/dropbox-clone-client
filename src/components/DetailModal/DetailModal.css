@@ -35,10 +35,20 @@
 .modal-left img,
 .modal-left video,
 .modal-left iframe,
-.modal-left embed {
+.modal-left embed,
+.modal-left .unsupported-file-message {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
+}
+
+.unsupported-file-message {
+  padding: 20px;
+  background-color: #ffdddd;
+  color: #d8000c;
+  border: 1px solid #d8000c;
+  border-radius: 4px;
+  text-align: center;
 }
 
 .modal-right {

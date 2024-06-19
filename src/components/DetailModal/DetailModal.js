@@ -120,7 +120,11 @@ const DetailModal = ({ isOpen, onClose, file, setIsButtonBlinking, user }) => {
         <embed src={file.url} type="text/plain" width="100%" height="600px" />
       );
     } else {
-      return <div>파일 미리보기를 지원하지 않는 파일 형식입니다.</div>;
+      return (
+        <div className="unsupported-file-message">
+          파일 미리보기를 지원하지 않는 파일 형식입니다.
+        </div>
+      );
     }
   };
 
