@@ -4,6 +4,8 @@ import axios from "axios";
 import Header from "../../components/Header";
 import Leftbar from "../../components/Leftbar";
 import { AiFillCaretDown, AiFillCaretUp } from "react-icons/ai";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -43,13 +45,13 @@ const deleteFilePermanently = async (fileId) => {
     );
     console.log(response);
     if (response.status === 200) {
-      alert("파일이 영구적으로 삭제되었습니다.");
+      toast.success("파일이 영구적으로 삭제되었습니다.");
     } else {
-      alert(`파일 삭제 실패: ${response.status}`);
+      toast.error(`파일 삭제 실패: ${response.status}`);
     }
     return response;
   } catch (error) {
-    console.log("Failed to permanently delete file", error);
+    toast.error("파일 삭제 중 오류가 발생했습니다.");
     return null;
   }
 };
@@ -63,13 +65,15 @@ const restoreFile = async (fileId) => {
     );
     console.log(response);
     if (response.status === 200) {
-      alert("파일이 복원되었습니다.");
+      toast.success("파일이 복원되었습니다.");
     } else {
-      alert(`파일 복원 실패: ${response.status}`);
+      toast.error(`파일 복원 실패: ${response.status}`);
     }
     return response;
   } catch (error) {
     console.log("Failed to restore file", error);
+    toast.error("파일 복원 중 오류가 발생했습니다.");
+
     return null;
   }
 };
@@ -81,13 +85,15 @@ const deleteAllFiles = async () => {
     const response = await axios.post(`${BASE_URL}/api/deleteFile/deleteAll`);
     console.log(response);
     if (response.status === 200) {
-      alert("휴지통이 비워졌습니다.");
+      toast.success("휴지통이 비워졌습니다.");
     } else {
-      alert(`휴지통 비우기 실패: ${response.status}`);
+      toast.error(`휴지통 비우기 실패: ${response.status}`);
     }
     return response;
   } catch (error) {
     console.log("Failed to delete all", error);
+    toast.error("휴지통 비우기 중 오류가 발생했습니다.");
+
     return null;
   }
 };
@@ -344,6 +350,7 @@ export default function TrashPage() {
           </div>
         )}
       </div>
+      <ToastContainer />
     </div>
   );
 }

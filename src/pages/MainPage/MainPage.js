@@ -7,6 +7,8 @@ import { AiFillCaretDown, AiFillCaretUp } from "react-icons/ai";
 import DetailModal from "../../components/DetailModal/DetailModal";
 import { useParams } from "react-router-dom";
 import GameComponent from "../../components/game";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -76,9 +78,9 @@ const deleteFile = async (fileId) => {
       `${BASE_URL}/api/deleteFile/moveFileToRecycleBin/${fileId}`
     );
     if (response.status === 200) {
-      alert("파일이 휴지통으로 이동했습니다.");
+      toast.success("파일이 휴지통으로 이동했습니다.");
     } else {
-      alert(`파일 이동 실패: ${response.status}`);
+      toast.error(`파일 이동 실패: ${response.status}`);
     }
     return response;
   } catch (error) {
@@ -102,23 +104,7 @@ export default function MainPage() {
   ]);
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [file, setFile] = useState({
-    aiType: [""],
-    comments: [],
-    createdAt: "2024-06-19T10:23:44.025Z",
-    deletedAt: "2024-06-19T10:23:44.026Z",
-    expiredAt: "2024-06-19T10:23:44.026Z",
-    fileName:
-      "스타트업 비즈니스 발표 대본 수정_1718792622490.docx",
-    isDeleted: false,
-    owner: "113083482729220862534",
-    size: 20488,
-    type: ".do",
-    updatedAt: "2024-06-19T10:23:44.026Z",
-    url: "https://instabox-bucket-01.s3.ap-northeast-2.amazonaws.com/%E1%84%89%E1%85%B3%E1%84%90%E1%85%A1%E1%84%90%E1%85%B3%E1%84%8B%E1%85%A5%E1%86%B8%20%E1%84%87%E1%85%B5%E1%84%8C%E1%85%B3%E1%84%82%E1%85%B5%E1%84%89%E1%85%B3%20%E1%84%87%E1%85%A1%E1%86%AF%E1%84%91%E1%85%AD%20%E1%84%83%E1%85%A2%E1%84%87%E1%85%A9%E1%86%AB%20%E1%84%89%E1%85%AE%E1%84%8C%E1%85%A5%E1%86%BC_1718792622490.docx",
-    __v: 0,
-    _id: "6672b1b0bfe56ae710a0b88a",
-  });
+  const [file, setFile] = useState({});
   const [isButtonBlinking, setIsButtonBlinking] = useState(false);
   const [isGameModalOpen, setIsGameModalOpen] = useState(false);
   const [user, setUser] = useState({});
@@ -399,6 +385,7 @@ export default function MainPage() {
           user={user}
         />
       </div>
+      <ToastContainer />
     </div>
   );
 }

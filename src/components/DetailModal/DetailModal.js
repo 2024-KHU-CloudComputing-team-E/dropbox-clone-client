@@ -53,17 +53,19 @@ const DetailModal = ({ isOpen, onClose, file, setIsButtonBlinking, user }) => {
   };
 
   const renderFileContent = (file) => {
+    let content;
+
     if (file.type === ".png" || file.type === ".jpeg" || file.type === ".jpg") {
-      return <img alt="Modal Thumbnail" src={file.url} />;
+      content = <img alt="Modal Thumbnail" src={file.url} />;
     } else if (file.type === ".mp4" || file.type === ".mov") {
-      return (
+      content = (
         <video controls>
           <source src={file.url} type={`video/${file.type.slice(1)}`} />
           Your browser does not support the video tag.
         </video>
       );
     } else if (file.type === ".pdf") {
-      return (
+      content = (
         <embed
           src={file.url}
           type="application/pdf"
@@ -78,7 +80,7 @@ const DetailModal = ({ isOpen, onClose, file, setIsButtonBlinking, user }) => {
       file.type ===
         "application/vnd.openxmlformats-officedocument.presentationml.presentation"
     ) {
-      return (
+      content = (
         <iframe
           src={`https://view.officeapps.live.com/op/embed.aspx?src=${file.url}`}
           width="100%"
@@ -97,7 +99,7 @@ const DetailModal = ({ isOpen, onClose, file, setIsButtonBlinking, user }) => {
         </iframe>
       );
     } else if (file.type === ".docx" || file.type === ".hwp") {
-      return (
+      content = (
         <iframe
           src={`https://view.officeapps.live.com/op/embed.aspx?src=${file.url}`}
           width="100%"
@@ -116,16 +118,18 @@ const DetailModal = ({ isOpen, onClose, file, setIsButtonBlinking, user }) => {
         </iframe>
       );
     } else if (file.type === ".txt") {
-      return (
+      content = (
         <embed src={file.url} type="text/plain" width="100%" height="600px" />
       );
     } else {
-      return (
+      content = (
         <div className="unsupported-file-message">
           파일 미리보기를 지원하지 않는 파일 형식입니다.
         </div>
       );
     }
+
+    return content;
   };
 
   if (!isOpen || !file) return null;

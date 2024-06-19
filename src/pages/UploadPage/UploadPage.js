@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import "./UploadPage.css";
 import Leftbar from "../../components/Leftbar";
 import Header from "../../components/Header";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function UploadPage() {
   return (
@@ -9,6 +11,8 @@ export default function UploadPage() {
       <Header />
       <Leftbar />
       <UploadBox />
+      <ToastContainer />{" "}
+      {/* ToastContainer를 추가하여 알림이 화면에 표시되도록 합니다 */}
     </>
   );
 }
@@ -87,7 +91,7 @@ const UploadBox = () => {
 
   const handleFileUpload = () => {
     if (!file) {
-      alert("파일을 선택해주세요.");
+      toast.warn("파일을 선택해주세요.");
       return;
     }
     setIsLoading(true); // 로딩 상태 시작
@@ -100,12 +104,12 @@ const UploadBox = () => {
     })
       .then((data) => {
         console.log("Upload successful", data);
-        alert("파일 업로드가 성공했습니다!");
+        toast.success("파일 업로드가 성공했습니다!");
         window.location.reload();
       })
       .catch((err) => {
         console.error("Error during file upload: ", err);
-        alert("파일 업로드 중 오류가 발생했습니다.");
+        toast.error("파일 업로드 중 오류가 발생했습니다.");
       })
       .finally(() => {
         setIsLoading(false); // 로딩 상태 종료
