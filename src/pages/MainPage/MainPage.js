@@ -94,14 +94,7 @@ export default function MainPage() {
   const [page, setPage] = useState(0);
   const [sortKey, setSortKey] = useState("date");
   const [sortOrder, setSortOrder] = useState("desc");
-  const [images, setImages] = useState([
-    {
-      fileId: "6672a924f40ff7dd2e29dcb2",
-      fileName: "FSSP_1718790431739.mp4",
-      imageUrl:
-        "http://instabox-alb-00-912203470.us-east-1.elb.amazonaws.com/api/thumbnail/defaultThumbnail.jpg",
-    },
-  ]);
+  const [images, setImages] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [file, setFile] = useState({});
