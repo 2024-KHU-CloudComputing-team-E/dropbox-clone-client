@@ -6,7 +6,6 @@ import "./DetailModal.css";
 const DetailModal = ({ isOpen, onClose, file, setIsButtonBlinking, user }) => {
   const [newComment, setNewComment] = useState("");
   const [comments, setComments] = useState([]);
-  const [numPages, setNumPages] = useState(null);
 
   useEffect(() => {
     if (file && Array.isArray(file.comments)) {
@@ -55,75 +54,69 @@ const DetailModal = ({ isOpen, onClose, file, setIsButtonBlinking, user }) => {
   };
 
   const renderFileContent = (file) => {
-    let content;
+    if (!file) return null;
 
-    if (
-      file.type === ".png" ||
-      file.type === ".jpeg" ||
-      file.type === ".jpg" ||
-      file.type === ".gif"
-    ) {
-      content = <img alt="Modal Thumbnail" src={file.url} />;
-    } else if (file.type === ".mp4") {
-      content = (
-        <video controls>
-          <source src={file.url} type={`video/${file.type.slice(1)}`} />
-          Your browser does not support the video tag.
-        </video>
-      );
-    } else if (
-      file.type === ".ppt" ||
-      file.type === ".pptx" ||
-      file.type === "application/vnd.ms-powerpoint" ||
-      file.type ===
-        "application/vnd.openxmlformats-officedocument.presentationml.presentation"
-    ) {
-      content = (
-        <iframe
-          src={`https://view.officeapps.live.com/op/embed.aspx?src=${file.url}`}
-          width="100%"
-          height="600px"
-          frameBorder="0"
-        >
-          This is an embedded{" "}
-          <a target="_blank" href="http://office.com">
-            Microsoft Office
-          </a>{" "}
-          document, powered by{" "}
-          <a target="_blank" href="http://office.com/webapps">
-            Office Online
-          </a>
-          .
-        </iframe>
-      );
-    } else if (file.type === ".docx") {
-      content = (
-        <iframe
-          src={`https://view.officeapps.live.com/op/embed.aspx?src=${file.url}`}
-          width="100%"
-          height="600px"
-          frameBorder="0"
-        >
-          This is an embedded{" "}
-          <a target="_blank" href="http://office.com">
-            Microsoft Office
-          </a>{" "}
-          document, powered by{" "}
-          <a target="_blank" href="http://office.com/webapps">
-            Office Online
-          </a>
-          .
-        </iframe>
-      );
-    } else {
-      content = (
-        <div className="unsupported-file-message">
-          파일 미리보기를 지원하지 않는 파일 형식입니다.
-        </div>
-      );
+    switch (file.type) {
+      case ".png":
+      case ".jpeg":
+      case ".jpg":
+      case ".gif":
+        return <img alt="Modal Thumbnail" src={file.url} />;
+      case ".mp4":
+        return (
+          <video controls>
+            <source src={file.url} type={`video/${file.type.slice(1)}`} />
+            Your browser does not support the video tag.
+          </video>
+        );
+      case ".ppt":
+      case ".pptx":
+      case "application/vnd.ms-powerpoint":
+      case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
+        return (
+          <iframe
+            src={`https://view.officeapps.live.com/op/embed.aspx?src=${file.url}`}
+            width="100%"
+            height="600px"
+            frameBorder="0"
+          >
+            This is an embedded{" "}
+            <a target="_blank" href="http://office.com">
+              Microsoft Office
+            </a>{" "}
+            document, powered by{" "}
+            <a target="_blank" href="http://office.com/webapps">
+              Office Online
+            </a>
+            .
+          </iframe>
+        );
+      case ".docx":
+        return (
+          <iframe
+            src={`https://view.officeapps.live.com/op/embed.aspx?src=${file.url}`}
+            width="100%"
+            height="600px"
+            frameBorder="0"
+          >
+            This is an embedded{" "}
+            <a target="_blank" href="http://office.com">
+              Microsoft Office
+            </a>{" "}
+            document, powered by{" "}
+            <a target="_blank" href="http://office.com/webapps">
+              Office Online
+            </a>
+            .
+          </iframe>
+        );
+      default:
+        return (
+          <div className="unsupported-file-message">
+            파일 미리보기를 지원하지 않는 파일 형식입니다.
+          </div>
+        );
     }
-
-    return content;
   };
 
   if (!isOpen || !file) return null;
