@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "./DetailModal.css";
 
 const DetailModal = ({ isOpen, onClose, file, setIsButtonBlinking, user }) => {
   const [newComment, setNewComment] = useState("");
   const [comments, setComments] = useState([]);
+  const [numPages, setNumPages] = useState(null);
 
   useEffect(() => {
     if (file && Array.isArray(file.comments)) {
@@ -55,23 +57,19 @@ const DetailModal = ({ isOpen, onClose, file, setIsButtonBlinking, user }) => {
   const renderFileContent = (file) => {
     let content;
 
-    if (file.type === ".png" || file.type === ".jpeg" || file.type === ".jpg") {
+    if (
+      file.type === ".png" ||
+      file.type === ".jpeg" ||
+      file.type === ".jpg" ||
+      file.type === ".gif"
+    ) {
       content = <img alt="Modal Thumbnail" src={file.url} />;
-    } else if (file.type === ".mp4" || file.type === ".mov") {
+    } else if (file.type === ".mp4") {
       content = (
         <video controls>
           <source src={file.url} type={`video/${file.type.slice(1)}`} />
           Your browser does not support the video tag.
         </video>
-      );
-    } else if (file.type === ".pdf") {
-      content = (
-        <embed
-          src={file.url}
-          type="application/pdf"
-          width="100%"
-          height="600px"
-        />
       );
     } else if (
       file.type === ".ppt" ||
@@ -98,7 +96,7 @@ const DetailModal = ({ isOpen, onClose, file, setIsButtonBlinking, user }) => {
           .
         </iframe>
       );
-    } else if (file.type === ".docx" || file.type === ".hwp") {
+    } else if (file.type === ".docx") {
       content = (
         <iframe
           src={`https://view.officeapps.live.com/op/embed.aspx?src=${file.url}`}
@@ -116,10 +114,6 @@ const DetailModal = ({ isOpen, onClose, file, setIsButtonBlinking, user }) => {
           </a>
           .
         </iframe>
-      );
-    } else if (file.type === ".txt") {
-      content = (
-        <embed src={file.url} type="text/plain" width="100%" height="600px" />
       );
     } else {
       content = (
