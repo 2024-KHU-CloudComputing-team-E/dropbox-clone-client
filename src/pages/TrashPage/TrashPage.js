@@ -119,8 +119,12 @@ export default function TrashPage() {
 
   const loadMoreImages = useCallback(async () => {
     console.log("loadMoreImages");
-    if (!user.userId) return;
+    if (!user.userId) {
+      console.log("no userId");
+      return;
+    }
     if (isLastPage.current) {
+      console.log("isLastpage");
       return;
     }
     setIsLoading(true);
@@ -131,7 +135,7 @@ export default function TrashPage() {
       setImages((prevImages) => [...prevImages, ...newImages]);
     }
     setIsLoading(false);
-  }, [user.userId, page, sortKey, sortOrder]);
+  }, [user, page, sortKey, sortOrder]);
 
   useEffect(() => {
     if (!observer.current) {
@@ -157,7 +161,7 @@ export default function TrashPage() {
   useEffect(() => {
     loadMoreImages();
     setInitialLoad(false); // 초기 로딩 후 상태 변경
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     if (initialLoad) {
